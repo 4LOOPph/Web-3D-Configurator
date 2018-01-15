@@ -1,20 +1,133 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <a class="navbar-brand" href="#">Navbar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Furnitures <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Cars</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="ml-5">
+        <div class="form-group">
+          <div class="col-md-12 mb-3">
+            <select class="form-control" id="inputGroupSelect01"  [(ngModel)]="appModels" (change)="selectModel()">
+              <option selected value="">Select Model</option>
+              <option value="chair">Chair</option>
+              <option value="officechair">Office Chair</option>
+              <option value="bed">Bed</option>
+              <option value="cycle">Bicycle</option>
+            </select>
+          </div>
+        </div>
+        <div id="accordion" role="tablist">
+          <div class="card">
+            <div class="card-header" role="tab" id="headingOne">
+              <h5 class="mb-0">
+		        <a data-toggle="collapse" href="#collapseOne" role="button" aria-expanded="true" aria-controls="collapseOne">
+		          Sizes
+		        </a>
+		      </h5>
+            </div>
+            <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+              <div class="card-body">
+                <div class="form-group">
+                  <div class="col-md-12 mb-3">
+                    <select class="form-control" id="inputGroupSelect01">
+                      <option selected>Choose...</option>
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" role="tab" id="headingTwo">
+              <h5 class="mb-0">
+		        <a class="collapsed" data-toggle="collapse" href="#collapseTwo" role="button" aria-expanded="false" aria-controls="collapseTwo">
+		          Table Top
+		        </a>
+		      </h5>
+            </div>
+            <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
+              <div class="card-body">
+                <div class="form-group">
+                  <div class="col-md-12 mb-3">
+                    <select class="form-control" id="inputGroupSelect01">
+                      <option selected>Choose...</option>
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <button type="button" class="btn btn-primary">Primary</button>
+                  <button type="button" class="btn btn-secondary">Secondary</button>
+                  <button type="button" class="btn btn-success">Success</button>
+                  <button type="button" class="btn btn-danger">Danger</button>
+                </div>
+                <div class="form-group">
+                  <button type="button" class="btn btn-warning">Warning</button>
+                  <button type="button" class="btn btn-info">Info</button>
+                  <button type="button" class="btn btn-light">Light</button>
+                  <button type="button" class="btn btn-dark">Dark</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" role="tab" id="headingThree">
+              <h5 class="mb-0">
+		        <a class="collapsed" data-toggle="collapse" href="#collapseThree" role="button" aria-expanded="false" aria-controls="collapseThree">
+		          Legs and Rails
+		        </a>
+		      </h5>
+            </div>
+            <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
+              <div class="card-body">
+                <div class="form-group">
+                  <div class="col-md-12 mb-3">
+                    <select class="form-control" id="inputGroupSelect01">
+                      <option selected>Choose...</option>
+                      <option value="1">One</option>
+                      <option value="2">Two</option>
+                      <option value="3">Three</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <button type="button" class="btn btn-primary">Primary</button>
+                  <button type="button" class="btn btn-secondary">Secondary</button>
+                  <button type="button" class="btn btn-success">Success</button>
+                  <button type="button" class="btn btn-danger">Danger</button>
+                </div>
+                <div class="form-group">
+                  <button type="button" class="btn btn-warning">Warning</button>
+                  <button type="button" class="btn btn-info">Info</button>
+                  <button type="button" class="btn btn-light">Light</button>
+                  <button type="button" class="btn btn-dark">Dark</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-9" id="rendererDiv">
+      <div id="renderHere"></div>
+    </div>
+  </div>
 </div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
-
