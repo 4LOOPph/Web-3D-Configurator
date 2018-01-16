@@ -28,11 +28,17 @@ export class FurnitureComponent implements OnInit {
 		let group = new THREE.Group();
 		let objects: any[] = [];
 		let backgroundMesh: any;
+		let texturePainting: any;
 
 		let innerW = document.getElementById('rendererDiv').offsetWidth;
 		let innerH = document.getElementById('rendererDiv').offsetHeight;
 		let appModel = localStorage.getItem('app.model');
+		let appTextureTop = localStorage.getItem('app.texture.top');
+		let appTextureLegs = localStorage.getItem('app.texture.legs');
 		console.log('appModel: ', appModel);
+		console.log('appTextureTop: ', appTextureTop);
+		console.log('appTextureLegs: ', appTextureLegs);
+
 		if (appModel) {
 			this.appModels = appModel;
 		}
@@ -62,6 +68,14 @@ export class FurnitureComponent implements OnInit {
 					map: modelChair()
 				})
 			);
+
+			if(appTextureTop === '1'){
+				texturePainting = new THREE.TextureLoader().load( "textures/water.jpg" );
+				texturePainting.wrapS = THREE.RepeatWrapping;
+				texturePainting.wrapT = THREE.RepeatWrapping;
+				texturePainting.repeat.set( 4, 4 );
+			}
+
 		} else if (appModel === 'officechair') {
 			backgroundMesh = new THREE.Mesh(
 				new THREE.PlaneGeometry(10, 10, 10, 10),
@@ -69,6 +83,20 @@ export class FurnitureComponent implements OnInit {
 					map: modelOfficeChair()
 				})
 			);
+
+			if(appTextureTop === '1'){
+				texturePainting = new THREE.TextureLoader().load( "assets/img/table/top/1.jpg" );
+				texturePainting.wrapS = THREE.RepeatWrapping;
+				texturePainting.wrapT = THREE.RepeatWrapping;
+				texturePainting.repeat.set( 4, 4 );
+				
+			}else if(appTextureTop === '2'){
+				texturePainting = new THREE.TextureLoader().load( "assets/img/table/top/1.jpg" );
+				texturePainting.wrapS = THREE.RepeatWrapping;
+				texturePainting.wrapT = THREE.RepeatWrapping;
+				texturePainting.repeat.set( 4, 4 );
+			}
+
 		} else if (appModel === 'bed') {
 			backgroundMesh = new THREE.Mesh(
 				new THREE.PlaneGeometry(10, 10, 10, 10),
@@ -185,16 +213,17 @@ export class FurnitureComponent implements OnInit {
 			mtlLoaderOfficeChair.setPath('assets/models/office_chair/');
 			mtlLoaderOfficeChair.load('office_chair.mtl', function(materials) {
 				materials.preload();
+
+				if(texturePainting){
+					console.log('texturePainting: ',texturePainting);
+					materials.map = texturePainting;
+				}
+
 				let objLoaderOfficeChair = new THREE.OBJLoader();
 				objLoaderOfficeChair.setMaterials(materials);
 				objLoaderOfficeChair.setPath('assets/models/office_chair/');
 				objLoaderOfficeChair.load('office_chair.obj', function(object) {
-					// object.position.x = -10;
 					object.scale.set(400, 400, 400);
-					// object.position.y = -40;
-					// object.position.z = 270;
-					// object.rotation.x = .01;
-					// object.rotation.y = -4.7;
 					scene.add(object);
 				});
 			});
@@ -245,6 +274,16 @@ export class FurnitureComponent implements OnInit {
 	selectModel() {
 		console.log('selectModel: ', this.appModels);
 		localStorage.setItem('app.model', this.appModels);
+		location.reload()
+	}
+
+	setTextureTop(texture){
+		localStorage.setItem('app.texture.top', texture);
+		location.reload()
+	}
+
+	setTextureLegs(texture){
+		localStorage.setItem('app.texture.legs', texture);
 		location.reload()
 	}
 
