@@ -51,7 +51,7 @@ export class FurnitureComponent implements OnInit {
 		let lightAmb = new THREE.AmbientLight(0x777777);
 		scene.add(lightAmb);
 
-		let renderer = new THREE.WebGLRenderer();
+		let renderer = new THREE.WebGLRenderer({ antialias: true });
 		renderer.setSize(innerW, window.innerHeight);
 		document.getElementById('renderHere').appendChild(renderer.domElement);
 

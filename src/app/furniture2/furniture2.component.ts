@@ -108,7 +108,7 @@ export class Furniture2Component implements OnInit {
 		// });
 
 		/* Renderer */
-		renderer = new THREE.WebGLRenderer();
+		renderer = new THREE.WebGLRenderer({ antialias: true });
 		renderer.setPixelRatio(window.devicePixelRatio);
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		renderer.setClearColor(new THREE.Color("hsl(0, 0%, 10%)"));
