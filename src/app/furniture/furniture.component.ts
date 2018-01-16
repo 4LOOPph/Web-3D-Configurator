@@ -136,7 +136,6 @@ export class FurnitureComponent implements OnInit {
 					object.rotation.x = .01;
 					object.rotation.y = -4.7;
 					scene.add(object);
-
 				});
 			});
 		};
@@ -155,7 +154,6 @@ export class FurnitureComponent implements OnInit {
 					object.position.y = 112;
 					object.scale.set(15, 15, 15);
 					scene.add(object);
-
 				});
 
 			});
@@ -191,17 +189,13 @@ export class FurnitureComponent implements OnInit {
 				objLoaderOfficeChair.setMaterials(materials);
 				objLoaderOfficeChair.setPath('assets/models/office_chair/');
 				objLoaderOfficeChair.load('office_chair.obj', function(object) {
-					object.position.x = -10;
-					object.scale.set(70, 70, 70);
-					object.position.y = -40;
-					object.position.z = 270;
-					object.rotation.x = .01;
-					object.rotation.y = -4.7;
-					object.updateMatrix();
-					group.add(object);
-
+					// object.position.x = -10;
+					object.scale.set(400, 400, 400);
+					// object.position.y = -40;
+					// object.position.z = 270;
+					// object.rotation.x = .01;
+					// object.rotation.y = -4.7;
 					scene.add(object);
-					objects.push(group);
 				});
 			});
 		};
@@ -219,10 +213,14 @@ export class FurnitureComponent implements OnInit {
 			controls.enableDamping = true;
 			controls.dampingFactor = 0.25;
 			controls.enableZoom = true;
-			controls.minPolarAngle = 0; // radians
-			controls.maxPolarAngle = Math.PI; // radians
-			controls.minAzimuthAngle = 0; // radians
-			controls.maxAzimuthAngle = Math.PI; // radians
+
+			// controls.enableDamping = true;
+			// controls.dampingFactor = 0.25;
+			// controls.enableZoom = true;
+			// controls.minPolarAngle = 0; // radians
+			// controls.maxPolarAngle = Math.PI; // radians
+			// controls.minAzimuthAngle = 0; // radians
+			// controls.maxAzimuthAngle = Math.PI; // radians
 		};
 
 		control();

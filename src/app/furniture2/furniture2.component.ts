@@ -69,42 +69,43 @@ export class Furniture2Component implements OnInit {
 			});
 		});*/
 
-		/*let mtlLoaderOfficeChair = new THREE.MTLLoader();
+		let mtlLoaderOfficeChair = new THREE.MTLLoader();
 		mtlLoaderOfficeChair.setBaseUrl('assets/models/office_chair/');
 		mtlLoaderOfficeChair.setPath('assets/models/office_chair/');
 		mtlLoaderOfficeChair.load('office_chair.mtl', function(materials) {
 			materials.preload();
+
 			let objLoaderOfficeChair = new THREE.OBJLoader();
 			objLoaderOfficeChair.setMaterials(materials);
 			objLoaderOfficeChair.setPath('assets/models/office_chair/');
 			objLoaderOfficeChair.load('office_chair.obj', function(object) {
-				object.scale.set(70, 70, 70);
-				object.position.y = -40;
-				object.position.z = 270;
+				// object.scale.set(70, 70, 70);
+				// object.position.y = -40;
+				// object.position.z = 270;
 				// object.rotation.x = .01;
 				// object.rotation.y = -4.7;
 				// object.updateMatrix();
 				scene.add(object);
 			});
-		});*/
-
-
-		let mtlLoaderBed = new THREE.MTLLoader();
-		mtlLoaderBed.setBaseUrl('assets/models/female/');
-		mtlLoaderBed.setPath('assets/models/female/');
-		mtlLoaderBed.load('female-croupier-2013-03-26.mtl', function(materials) {
-			materials.preload();
-			console.log('materials: ', materials);
-			materials.materials.default.map.magFilter = THREE.NearestFilter;
-			materials.materials.default.map.minFilter = THREE.LinearFilter;
-
-			let objLoaderBed = new THREE.OBJLoader();
-			objLoaderBed.setMaterials(materials);
-			objLoaderBed.setPath('assets/models/female/');
-			objLoaderBed.load('female-croupier-2013-03-26.obj', function(object) {
-				scene.add(object);
-			});
 		});
+
+
+		// let mtlLoaderBed = new THREE.MTLLoader();
+		// mtlLoaderBed.setBaseUrl('assets/models/female/');
+		// mtlLoaderBed.setPath('assets/models/female/');
+		// mtlLoaderBed.load('female-croupier-2013-03-26.mtl', function(materials) {
+		// 	materials.preload();
+		// 	console.log('materials: ', materials);
+		// 	materials.materials.default.map.magFilter = THREE.NearestFilter;
+		// 	materials.materials.default.map.minFilter = THREE.LinearFilter;
+
+		// 	let objLoaderBed = new THREE.OBJLoader();
+		// 	objLoaderBed.setMaterials(materials);
+		// 	objLoaderBed.setPath('assets/models/female/');
+		// 	objLoaderBed.load('female-croupier-2013-03-26.obj', function(object) {
+		// 		scene.add(object);
+		// 	});
+		// });
 
 		/* Renderer */
 		renderer = new THREE.WebGLRenderer();
