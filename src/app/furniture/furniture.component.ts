@@ -28,7 +28,6 @@ export class FurnitureComponent implements OnInit {
 		let group = new THREE.Group();
 		let objects: any[] = [];
 		let backgroundMesh: any;
-		let lighting, ambient, keyLight, fillLight, backLight;
 
 		let innerW = document.getElementById('rendererDiv').offsetWidth;
 		let innerH = document.getElementById('rendererDiv').offsetHeight;
@@ -43,6 +42,7 @@ export class FurnitureComponent implements OnInit {
 		camera.position.z = 100;
 		camera.position.x = 400;
 		camera.position.y = 150;
+		camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 		let light = new THREE.PointLight(0xEEEEEE);
 		light.position.set(20, 0, 20);

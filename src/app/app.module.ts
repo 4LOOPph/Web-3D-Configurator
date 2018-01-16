@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { FurnitureComponent } from './furniture/furniture.component';
 import { CarsComponent } from './cars/cars.component';
 import { BasiclayoutComponent } from './layout/basiclayout/basiclayout.component';
+import { Furniture2Component } from './furniture2/furniture2.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { BasiclayoutComponent } from './layout/basiclayout/basiclayout.component
     AppComponent,
     FurnitureComponent,
     CarsComponent,
-    BasiclayoutComponent
+    BasiclayoutComponent,
+    Furniture2Component
   ],
   imports: [
     BrowserModule,

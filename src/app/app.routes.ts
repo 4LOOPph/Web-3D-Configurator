@@ -2,7 +2,7 @@ import { Routes, CanActivate } from '@angular/router';
 
 import { FurnitureComponent } from './furniture/furniture.component';
 import { CarsComponent } from './cars/cars.component';
-
+import { Furniture2Component } from './furniture2/furniture2.component';
 import { BasiclayoutComponent } from './layout/basiclayout/basiclayout.component';
 
 
@@ -19,6 +19,12 @@ export const ROUTES: Routes = [
 		path: '', component: BasiclayoutComponent,
 		children: [
 			{ path: 'cars', component: CarsComponent },
+		]
+	},
+	{
+		path: '', component: BasiclayoutComponent,
+		children: [
+			{ path: 'furniture2', component: Furniture2Component },
 		]
 	},
 	// Handle all other routes
