@@ -9,7 +9,7 @@ declare let THREE: any;
 })
 export class AppComponent implements OnInit {
 	title = 'app';
-	appModels:any ="";
+	appModels: any = "";
 
 	constructor() {
 
@@ -21,12 +21,18 @@ export class AppComponent implements OnInit {
 	}
 
 	initGUI() {
-		var color = 0x000000;
-		var group = new THREE.Group();
-		var objects: any[] = [];
+		let color = 0x000000;
+		let group = new THREE.Group();
+		let objects: any[] = [];
+		let backgroundMesh: any;
 
 		let innerW = document.getElementById('rendererDiv').offsetWidth;
 		let innerH = document.getElementById('rendererDiv').offsetHeight;
+		let appModel = localStorage.getItem('app.model');
+		console.log('appModel: ', appModel);
+		if(appModel){
+			this.appModels = appModel;
+		}
 
 		let scene = new THREE.Scene();
 		let camera = new THREE.PerspectiveCamera(75, innerW / window.innerHeight, 0.1, 1000);
@@ -34,53 +40,71 @@ export class AppComponent implements OnInit {
 		camera.position.x = 400;
 		camera.position.y = 150;
 
-		var light = new THREE.PointLight(0xEEEEEE);
+		let light = new THREE.PointLight(0xEEEEEE);
 		light.position.set(20, 0, 20);
 		scene.add(light);
 
-		var lightAmb = new THREE.AmbientLight(0x777777);
+		let lightAmb = new THREE.AmbientLight(0x777777);
 		scene.add(lightAmb);
 
 		let renderer = new THREE.WebGLRenderer();
 		renderer.setSize(innerW, window.innerHeight);
 		document.getElementById('renderHere').appendChild(renderer.domElement);
 
-		var backgroundMesh = new THREE.Mesh(
-			new THREE.PlaneGeometry(10, 10, 10, 10),
-			new THREE.MeshBasicMaterial({
-				map: modelChair()
-			})
-		);
+		if (appModel === 'chair') {
+			backgroundMesh = new THREE.Mesh(
+				new THREE.PlaneGeometry(10, 10, 10, 10),
+				new THREE.MeshBasicMaterial({
+					map: modelChair()
+				})
+			);
+		}else if(appModel === 'officechair'){
+			backgroundMesh = new THREE.Mesh(
+				new THREE.PlaneGeometry(10, 10, 10, 10),
+				new THREE.MeshBasicMaterial({
+					map: modelOfficeChair()
+				})
+			);
+		}else if(appModel === 'bed'){
+			backgroundMesh = new THREE.Mesh(
+				new THREE.PlaneGeometry(10, 10, 10, 10),
+				new THREE.MeshBasicMaterial({
+					map: modelBed()
+				})
+			);
+		}else{
+			backgroundMesh = new THREE.Mesh(
+				new THREE.PlaneGeometry(10, 10, 10, 10)
+			);
+		}
 
 		backgroundMesh.material.depthTest = false;
 		backgroundMesh.material.depthWrite = true;
 
-		var backgroundScene = new THREE.Scene();
-		var backgroundCamera = new THREE.Camera();
+		let backgroundScene = new THREE.Scene();
+		let backgroundCamera = new THREE.Camera();
 		backgroundScene.add(backgroundCamera);
 		backgroundScene.add(backgroundMesh);
 
 		window.addEventListener('resize', onWindowResize, false);
 
 		function modelChair() {
-			var mtlLoaderChair = new THREE.MTLLoader();
+			let mtlLoaderChair = new THREE.MTLLoader();
 			mtlLoaderChair.setBaseUrl('assets/models/chair/');
 			mtlLoaderChair.setPath('assets/models/chair/');
 			mtlLoaderChair.load('chair.mtl', function(materials) {
-
 				materials.preload();
-
 				materials.materials.fusta_taula.map.magFilter = THREE.NearestFilter;
 				materials.materials.fusta_taula.map.minFilter = THREE.LinearFilter;
 
-				var objLoaderChair = new THREE.OBJLoader();
+				let objLoaderChair = new THREE.OBJLoader();
 				objLoaderChair.setMaterials(materials);
 				objLoaderChair.setPath('assets/models/chair/');
 				objLoaderChair.load('chair.obj', function(object) {
 					object.position.y = -40;
 					object.position.z = 330;
 					object.scale.set(80, 80, 80);
-					// object.rotation.x = .01;
+					object.rotation.x = .01;
 					scene.add(object);
 				});
 
@@ -88,7 +112,7 @@ export class AppComponent implements OnInit {
 		};
 
 		function modelBed() {
-			var mtlLoaderBed = new THREE.MTLLoader();
+			let mtlLoaderBed = new THREE.MTLLoader();
 			mtlLoaderBed.setBaseUrl('assets/models/bed/');
 			mtlLoaderBed.setPath('assets/models/bed/');
 			mtlLoaderBed.load('juniorBed.mtl', function(materials) {
@@ -97,7 +121,7 @@ export class AppComponent implements OnInit {
 				materials.materials.Wood.map.magFilter = THREE.NearestFilter;
 				materials.materials.Wood.map.minFilter = THREE.LinearFilter;
 
-				var objLoaderBed = new THREE.OBJLoader();
+				let objLoaderBed = new THREE.OBJLoader();
 				objLoaderBed.setMaterials(materials);
 				objLoaderBed.setPath('assets/models/bed/');
 				objLoaderBed.load('juniorBed.obj', function(object) {
@@ -114,12 +138,12 @@ export class AppComponent implements OnInit {
 		};
 
 		function modelCycle() {
-			var mtlLoaderBed = new THREE.MTLLoader();
+			let mtlLoaderBed = new THREE.MTLLoader();
 			mtlLoaderBed.setBaseUrl('assets/models/cycle/');
 			mtlLoaderBed.setPath('assets/models/cycle/');
 			mtlLoaderBed.load('cycle_model_01.mtl', function(materials) {
 				materials.preload();
-				var objLoaderBed = new THREE.OBJLoader();
+				let objLoaderBed = new THREE.OBJLoader();
 				objLoaderBed.setMaterials(materials);
 				objLoaderBed.setPath('assets/models/cycle/');
 				objLoaderBed.load('cycle_model_01.obj', function(object) {
@@ -134,12 +158,12 @@ export class AppComponent implements OnInit {
 		};
 
 		function modelHouse() {
-			var mtlLoader = new THREE.MTLLoader();
+			let mtlLoader = new THREE.MTLLoader();
 			mtlLoader.setBaseUrl('assets/models/house/');
 			mtlLoader.setPath('assets/models/house/');
 			mtlLoader.load('house interior.mtl', function(materials) {
 				materials.preload();
-				var objLoader = new THREE.OBJLoader();
+				let objLoader = new THREE.OBJLoader();
 				objLoader.setMaterials(materials);
 				objLoader.setPath('assets/models/house/');
 				objLoader.load('house interior.obj', function(object) {
@@ -154,12 +178,12 @@ export class AppComponent implements OnInit {
 		};
 
 		function modelOfficeChair() {
-			var mtlLoaderOfficeChair = new THREE.MTLLoader();
+			let mtlLoaderOfficeChair = new THREE.MTLLoader();
 			mtlLoaderOfficeChair.setBaseUrl('assets/models/office_chair/');
 			mtlLoaderOfficeChair.setPath('assets/models/office_chair/');
 			mtlLoaderOfficeChair.load('office_chair.mtl', function(materials) {
 				materials.preload();
-				var objLoaderOfficeChair = new THREE.OBJLoader();
+				let objLoaderOfficeChair = new THREE.OBJLoader();
 				objLoaderOfficeChair.setMaterials(materials);
 				objLoaderOfficeChair.setPath('assets/models/office_chair/');
 				objLoaderOfficeChair.load('office_chair.obj', function(object) {
@@ -205,25 +229,20 @@ export class AppComponent implements OnInit {
 			if (color < 0xdddddd) color += 0x0000ff;
 			renderer.autoClear = false;
 			renderer.clear();
-			renderer.render(backgroundScene, backgroundCamera);
+
+			if(appModel){
+				renderer.render(backgroundScene, backgroundCamera);
+			}
+
 			renderer.render(scene, camera);
 		};
 
 		animate();
 	}
 
-	selectModel(){
-		console.log('selectModel: ', this.appModels);
-		if(this.appModels === 'chair'){
-			
-		}else if(this.appModels === 'officechair'){
-
-		}else if(this.appModels === 'bed'){
-
-		}else if(this.appModels === 'cycle'){
-
-		}else{
-			
-		}
+	selectModel() {
+		console.log('selectModel: ',this.appModels);
+		localStorage.setItem('app.model', this.appModels);
+		location.reload()
 	}
 }
