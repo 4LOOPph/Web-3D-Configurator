@@ -124,7 +124,7 @@ export class FurnitureComponent implements OnInit {
 			let mtlLoaderChair = new THREE.MTLLoader();
 			mtlLoaderChair.setBaseUrl('assets/models/chair/');
 			mtlLoaderChair.setPath('assets/models/chair/');
-			mtlLoaderChair.load('chair.mtl', function(materials) {
+			mtlLoaderChair.load('chair.mtl', function (materials) {
 				materials.preload();
 				materials.materials.fusta_taula.map.magFilter = THREE.NearestFilter;
 				materials.materials.fusta_taula.map.minFilter = THREE.LinearFilter;
@@ -132,15 +132,32 @@ export class FurnitureComponent implements OnInit {
 				let objLoaderChair = new THREE.OBJLoader();
 				objLoaderChair.setMaterials(materials);
 				objLoaderChair.setPath('assets/models/chair/');
-				objLoaderChair.load('chair.obj', function(object) {
+				objLoaderChair.load('chair.obj', function (object) {
 					object.scale.set(400, 400, 400);
 					// object.rotation.x = Math.PI / 2;
 					// object.rotation.y = Math.PI / 2;
-					object.rotation.x = .01;
+					// object.rotation.x = .01;
+
+					// <position object>
+					object.position.x = 140;
+					object.position.y = -100;
+					object.position.z = 70;
+
 					scene.add(object);
 				});
 
 			});
+			// ---------------BOX GUIDE HERE
+			var geometry = new THREE.BoxGeometry(50, 50, 50);
+			var material = new THREE.MeshBasicMaterial({
+				color: '#c0c0c0',
+			});
+			var mesh = new THREE.Mesh(
+				geometry,
+				material
+			);
+			scene.add(mesh);
+			// ---------------	
 		};
 
 		function modelBed() {
