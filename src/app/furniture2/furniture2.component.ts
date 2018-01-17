@@ -69,24 +69,25 @@ export class Furniture2Component implements OnInit {
 			});
 		});*/
 
-		/*let mtlLoaderOfficeChair = new THREE.MTLLoader();
-		mtlLoaderOfficeChair.setBaseUrl('assets/models/office_chair/');
-		mtlLoaderOfficeChair.setPath('assets/models/office_chair/');
-		mtlLoaderOfficeChair.load('office_chair.mtl', function(materials) {
-			materials.preload();
-			let objLoaderOfficeChair = new THREE.OBJLoader();
-			objLoaderOfficeChair.setMaterials(materials);
-			objLoaderOfficeChair.setPath('assets/models/office_chair/');
-			objLoaderOfficeChair.load('office_chair.obj', function(object) {
-				object.scale.set(70, 70, 70);
-				object.position.y = -40;
-				object.position.z = 270;
-				// object.rotation.x = .01;
-				// object.rotation.y = -4.7;
-				// object.updateMatrix();
-				scene.add(object);
-			});
-		});*/
+		// let mtlLoaderOfficeChair = new THREE.MTLLoader();
+		// mtlLoaderOfficeChair.setBaseUrl('assets/models/office_chair/');
+		// mtlLoaderOfficeChair.setPath('assets/models/office_chair/');
+		// mtlLoaderOfficeChair.load('office_chair.mtl', function(materials) {
+		// 	materials.preload();
+
+		// 	let objLoaderOfficeChair = new THREE.OBJLoader();
+		// 	objLoaderOfficeChair.setMaterials(materials);
+		// 	objLoaderOfficeChair.setPath('assets/models/office_chair/');
+		// 	objLoaderOfficeChair.load('office_chair.obj', function(object) {
+		// 		// object.scale.set(70, 70, 70);
+		// 		// object.position.y = -40;
+		// 		// object.position.z = 270;
+		// 		// object.rotation.x = .01;
+		// 		// object.rotation.y = -4.7;
+		// 		// object.updateMatrix();
+		// 		scene.add(object);
+		// 	});
+		// });
 
 
 		let mtlLoaderBed = new THREE.MTLLoader();
