@@ -146,9 +146,8 @@ export class FurnitureComponent implements OnInit {
 				objLoaderChair.load('chair.obj', function (object) {
 					object.scale.set(400, 400, 400);
 					// <position object>
-					object.position.x = 140;
-					object.position.y = -100;
-					object.position.z = 70;
+					center3DModel(object);
+
 					object.rotation.y = 0;
 
 					boundingBox.setFromObject(object);
@@ -178,26 +177,13 @@ export class FurnitureComponent implements OnInit {
 				objLoaderBed.setPath('assets/models/bed/');
 				objLoaderBed.load('juniorBed.obj', function (object) {
 					object.scale.set(1, 1, 1);
-					// object.position.x = -15;
-					// object.position.y = -150;
-					// object.position.z = 10;
+					// <position object>
+					center3DModel(object);
 
 					object.rotation.y = -4.7;
 					scene.add(object);
 				});
 			});
-
-			// ---------------BOX GUIDE HERE
-			var geometry = new THREE.BoxGeometry(50, 50, 50);
-			var material = new THREE.MeshBasicMaterial({
-				color: '#c0c0c0',
-			});
-			var mesh = new THREE.Mesh(
-				geometry,
-				material
-			);
-			scene.add(mesh);
-			// ---------------	
 		};
 		this.functionModelBed = modelBed;
 
@@ -218,25 +204,13 @@ export class FurnitureComponent implements OnInit {
 				objLoaderOfficeChair.setPath('assets/models/office_chair/');
 				objLoaderOfficeChair.load('office_chair.obj', function (object) {
 					object.scale.set(260, 260, 260);
-					object.position.x = 120;
-					object.position.y = -50;
-					object.position.z = 95;
+					// <position object>
+					center3DModel(object);
+
 					scene.add(object);
 					camera.position.z = 600;
 				});
 			});
-
-			// ---------------BOX GUIDE HERE
-			var geometry = new THREE.BoxGeometry(50, 50, 50);
-			var material = new THREE.MeshBasicMaterial({
-				color: '#c0c0c0',
-			});
-			var mesh = new THREE.Mesh(
-				geometry,
-				material
-			);
-			scene.add(mesh);
-			// ---------------	
 		};
 		this.functionModelOfficeChair = modelOfficeChair;
 
@@ -275,7 +249,16 @@ export class FurnitureComponent implements OnInit {
 			renderer.render(scene, camera);
 		};
 
-		animate();		
+		animate();
+
+		function center3DModel(object) {
+			var thsOBJ = new THREE.Box3().setFromObject(object);
+			var valX = (thsOBJ.getSize().x);
+			var valY = (thsOBJ.getSize().y);
+			var valZ = (thsOBJ.getSize().z);
+		
+			return object.position.set(((thsOBJ.getCenter().x) * -1), (valY * -1) / 2, ((thsOBJ.getCenter().z) * -1));
+		}
 	}
 
 	selectModel() {
