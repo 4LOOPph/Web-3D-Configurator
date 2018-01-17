@@ -140,8 +140,10 @@ export class FurnitureComponent implements OnInit {
 					object.position.x = 140;
 					object.position.y = -100;
 					object.position.z = 70;
+					object.rotation.y = 0;
 
 					scene.add(object);
+					camera.position.z = 500;
 				});
 
 			});
@@ -256,6 +258,7 @@ export class FurnitureComponent implements OnInit {
 					// controls.target = center;
 
 					scene.add(object);
+					camera.position.z = 600;
 				});
 			});
 
