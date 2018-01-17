@@ -38,7 +38,7 @@ export class FurnitureComponent implements OnInit {
 		}
 
 		let scene = new THREE.Scene();
-		let camera = new THREE.PerspectiveCamera(75, innerW / window.innerHeight, 0.1, 1000);
+		let camera = new THREE.PerspectiveCamera(75, innerW / window.innerHeight, 0.1, 100000);
 		camera.position.z = 100;
 		camera.position.x = 400;
 		camera.position.y = 150;
@@ -53,6 +53,7 @@ export class FurnitureComponent implements OnInit {
 
 		let renderer = new THREE.WebGLRenderer({ antialias: true });
 		renderer.setSize(innerW, window.innerHeight);
+		document.getElementById('renderHere').style.cssText = 'margin-right: 50px; border: 1px solid black;';
 		document.getElementById('renderHere').appendChild(renderer.domElement);
 
 		if (appModel === 'chair') {
@@ -105,10 +106,14 @@ export class FurnitureComponent implements OnInit {
 				objLoaderChair.setMaterials(materials);
 				objLoaderChair.setPath('assets/models/chair/');
 				objLoaderChair.load('chair.obj', function(object) {
-					object.scale.set(400, 400, 400);
-					// object.rotation.x = Math.PI / 2;
-					// object.rotation.y = Math.PI / 2;
-					object.rotation.x = .01;
+					object.scale.set(250, 250, 250);
+					object.position.x = 90;
+					object.position.y = 0;
+					object.position.z = 0;
+					object.rotation.x = 0;
+					object.rotation.y = 0;
+					// object.rotation.x = .01;
+
 					scene.add(object);
 				});
 
@@ -129,14 +134,13 @@ export class FurnitureComponent implements OnInit {
 				objLoaderBed.setMaterials(materials);
 				objLoaderBed.setPath('assets/models/bed/');
 				objLoaderBed.load('juniorBed.obj', function(object) {
-					object.position.x = 35;
-					object.position.y = -43;
-					object.position.z = 230;
-					object.scale.set(1, 1, 1);
-					object.rotation.x = .01;
-					object.rotation.y = -4.7;
+					// object.position.x = -100;
+					// object.position.y = -43;
+					// object.position.z = 230;
+					// object.scale.set(1, 1, 1);
+					// object.rotation.x = .01;
+					// object.rotation.y = -4.7;
 					scene.add(object);
-
 				});
 			});
 		};
@@ -191,17 +195,15 @@ export class FurnitureComponent implements OnInit {
 				objLoaderOfficeChair.setMaterials(materials);
 				objLoaderOfficeChair.setPath('assets/models/office_chair/');
 				objLoaderOfficeChair.load('office_chair.obj', function(object) {
-					object.position.x = -10;
-					object.scale.set(70, 70, 70);
-					object.position.y = -40;
-					object.position.z = 270;
-					object.rotation.x = .01;
-					object.rotation.y = -4.7;
-					object.updateMatrix();
-					group.add(object);
+					// object.position.x = 0;
+					object.scale.set(250, 250, 250);
+					// object.position.y = 0;
+					// object.position.z = 0;
+					// object.rotation.x = 0;
+					// object.rotation.y = 0;
+					// object.updateMatrix();
 
 					scene.add(object);
-					objects.push(group);
 				});
 			});
 		};
@@ -219,10 +221,10 @@ export class FurnitureComponent implements OnInit {
 			controls.enableDamping = true;
 			controls.dampingFactor = 0.25;
 			controls.enableZoom = true;
-			controls.minPolarAngle = 0; // radians
-			controls.maxPolarAngle = Math.PI; // radians
-			controls.minAzimuthAngle = 0; // radians
-			controls.maxAzimuthAngle = Math.PI; // radians
+			// controls.minPolarAngle = 0; // radians
+			// controls.maxPolarAngle = Math.PI; // radians
+			// controls.minAzimuthAngle = 0; // radians
+			// controls.maxAzimuthAngle = Math.PI; // radians
 		};
 
 		control();
