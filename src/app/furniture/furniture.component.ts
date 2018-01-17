@@ -23,7 +23,6 @@ export class FurnitureComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		console.log('ngInit')
 		if (!Detector.webgl) Detector.addGetWebGLMessage();
 
 		this.initGUI();
@@ -43,9 +42,6 @@ export class FurnitureComponent implements OnInit {
 		let appModel = localStorage.getItem('app.model');
 		let appTextureTop = localStorage.getItem('app.texture.top');
 		let appTextureLegs = localStorage.getItem('app.texture.legs');
-		console.log('appModel: ', appModel);
-		console.log('appTextureTop: ', appTextureTop);
-		console.log('appTextureLegs: ', appTextureLegs);
 
 		if (appModel) {
 			this.appModels = appModel;
@@ -72,13 +68,25 @@ export class FurnitureComponent implements OnInit {
 		document.getElementById('renderHere').style.cssText = 'margin-right: 50px; border: 1px solid black;';
 		document.getElementById('renderHere').appendChild(renderer.domElement);
 
-		const textureLoader = new THREE.TextureLoader();
-		textureLoader.crossOrigin = "Anonymous";
-
 		let url: string = "assets/img/table/top/" + appTextureTop + ".jpg";
 		let url2: string = "assets/img/table/" + appTextureLegs + ".jpg";
+
+		const textureLoader = new THREE.TextureLoader();
+		textureLoader.crossOrigin = "Anonymous";
 		texturePainting = textureLoader.load(url);
 		texturePainting2 = textureLoader.load(url2);
+
+		/* texturePainting = THREE.ImageUtils.loadTexture(url);
+		texturePainting2 = THREE.ImageUtils.loadTexture(url2); */
+
+		texturePainting.wrapS = THREE.RepeatWrapping;
+		texturePainting.wrapT = THREE.RepeatWrapping;
+		texturePainting.repeat.set(4, 4, 4);
+
+		texturePainting2.wrapS = THREE.RepeatWrapping;
+		texturePainting2.wrapT = THREE.RepeatWrapping;
+		texturePainting2.repeat.set(4, 4, 4);
+
 
 		if (appModel === 'chair') {
 			backgroundMesh = new THREE.Mesh(
@@ -94,16 +102,6 @@ export class FurnitureComponent implements OnInit {
 					map: modelOfficeChair()
 				})
 			);
-
-			if (appTextureTop === '1') {
-				texturePainting = new THREE.TextureLoader().load("assets/img/table/top/1.jpg");
-				// texturePainting.wrapS = THREE.RepeatWrapping;
-				// texturePainting.wrapT = THREE.RepeatWrapping;
-			} else if (appTextureTop === '2') {
-				texturePainting = new THREE.TextureLoader().load("assets/img/table/top/1.jpg");
-				// texturePainting.wrapS = THREE.RepeatWrapping;
-				// texturePainting.wrapT = THREE.RepeatWrapping;
-			}
 		} else if (appModel === 'bed') {
 			backgroundMesh = new THREE.Mesh(
 				new THREE.PlaneGeometry(10, 10, 10, 10),
@@ -116,10 +114,8 @@ export class FurnitureComponent implements OnInit {
 				new THREE.PlaneGeometry(10, 10, 10, 10)
 			);
 		}
-
 		backgroundMesh.material.depthTest = false;
 		backgroundMesh.material.depthWrite = true;
-
 		this.currentObject = backgroundMesh;
 
 		let backgroundScene = new THREE.Scene();
@@ -153,22 +149,24 @@ export class FurnitureComponent implements OnInit {
 
 					object.traverse(function (child) {
 						console.log('chld', child.material);
-						if (child.material && child.material.name === 'fusta_taula') {
-							console.log('texturePainting2: ', texturePainting2);
-							if (texturePainting2) {
-								child.material.map = texturePainting2;
-								child.material.needsUpdate = true
+						if (child.material) {
+							// SEAT
+							if (child.material.name === 'coixi_cadira') {
+								if (texturePainting) {
+									child.material.map = texturePainting;
+								}
 							}
-						}
 
-						if (child.material && child.material.name === 'coixi_cadira') {
-							console.log('texturePainting: ', texturePainting);
-							if (texturePainting) {
-								child.material.map = texturePainting;
-								child.material.needsUpdate = true
+							// LEGS
+							if (child.material.name === 'fusta_taula') {
+								if (texturePainting2) {
+									child.material.map = texturePainting2;
+								}
 							}
+							child.material.needsUpdate = true;
 						}
 					});
+					object.updateMatrix();
 
 
 					scene.add(object);
@@ -199,21 +197,31 @@ export class FurnitureComponent implements OnInit {
 
 					object.traverse(function (child) {
 						console.log('chld', child.material);
-						/* if (child.material && child.material.name === 'fusta_taula') {
-							console.log('texturePainting2: ', texturePainting2);
-							if (texturePainting2) {
-								child.material.map = texturePainting2;
-								child.material.needsUpdate = true
+						if (child.material) {
+							console.log('chld', child.material);
+							// PILLOW
+							if (child.material.name === 'pillow') {
+								if (texturePainting) {
+									child.material.map = texturePainting;
+									// child.material.color.setRGB(0, 54, 135);
+								}
 							}
-						}
 
-						if (child.material && child.material.name === 'coixi_cadira') {
-							console.log('texturePainting: ', texturePainting);
-							if (texturePainting) {
-								child.material.map = texturePainting;
-								child.material.needsUpdate = true
+							if (child.material.name === 'couch') {
+								if (texturePainting) {
+									child.material.map = texturePainting;
+									// child.material.color.setRGB(0, 54, 135);
+								}
 							}
-						} */
+
+							// WOOD
+							if (child.material.name === 'Wood') {
+								if (texturePainting2) {
+									child.material.map = texturePainting2;
+								}
+							}
+							child.material.needsUpdate = true;
+						}
 					});
 
 
@@ -230,11 +238,6 @@ export class FurnitureComponent implements OnInit {
 			mtlLoaderOfficeChair.load('office_chair.mtl', function (materials) {
 				materials.preload();
 
-				if (texturePainting) {
-					console.log('texturePainting: ', texturePainting);
-					materials.map = texturePainting;
-				}
-
 				let objLoaderOfficeChair = new THREE.OBJLoader();
 				objLoaderOfficeChair.setMaterials(materials);
 				objLoaderOfficeChair.setPath('assets/models/office_chair/');
@@ -245,22 +248,23 @@ export class FurnitureComponent implements OnInit {
 					camera.position.z = 600;
 
 					object.traverse(function (child) {
-						console.log('chld', child.material);
-						/* if (child.material && child.material.name === 'fusta_taula') {
-							console.log('texturePainting2: ', texturePainting2);
-							if (texturePainting2) {
-								child.material.map = texturePainting2;
-								child.material.needsUpdate = true
+						if (child.material) {
+							console.log('chld', child.material);
+							// SEAT
+							if (child.material.name === 'tela_sillon_azul') {
+								if (texturePainting) {
+									child.material.map = texturePainting;
+								}
 							}
-						}
 
-						if (child.material && child.material.name === 'coixi_cadira') {
-							console.log('texturePainting: ', texturePainting);
-							if (texturePainting) {
-								child.material.map = texturePainting;
-								child.material.needsUpdate = true
+							if (child.material.name === 'plastico_gris') {
+								if (texturePainting2) {
+									// child.material.map = texturePainting2;
+									// child.material.color.setRGB(0, 54, 135);
+								}
 							}
-						} */
+							child.material.needsUpdate = true;
+						}
 					});
 
 					scene.add(object);
@@ -322,7 +326,6 @@ export class FurnitureComponent implements OnInit {
 		console.log(this.appModels);
 		for (let i = 0; i < this.currentScene.children.length; i++) {
 			let child = this.currentScene.children[i];
-			console.log(child);
 			if (child.type === 'Group') {
 				this.currentScene.remove(child);
 				this.showModel(this.appModels);
