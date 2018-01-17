@@ -280,10 +280,6 @@ export class FurnitureComponent implements OnInit {
 
 	selectModel() {
 		localStorage.setItem('app.model', this.appModels);
-<<<<<<< HEAD
-		location.reload()
-	}	
-=======
 		//location.reload();
 		console.log(this.appModels);
 		for (let i = 0; i < this.currentScene.children.length; i++) {
@@ -310,7 +306,6 @@ export class FurnitureComponent implements OnInit {
 				break;
 		}
 	}
->>>>>>> 8a6949035318f4dfa23c29fbaf33e7d2cab6198c
 
 	setTextureTop(texture) {
 		localStorage.setItem('app.texture.top', texture);
