@@ -11,6 +11,12 @@ declare let Detector: any;
 export class FurnitureComponent implements OnInit {
 	title = 'app';
 	appModels: any = "";
+	currentObject: any;
+	currentScene : any;
+
+	functionModalChair: any;
+	functionModelOfficeChair: any;
+	functionModelBed: any;
 
 	constructor() {
 
@@ -45,6 +51,7 @@ export class FurnitureComponent implements OnInit {
 		}
 
 		let scene = new THREE.Scene();
+		this.currentScene = scene;
 		let camera = new THREE.PerspectiveCamera(75, innerW / window.innerHeight, 0.1, 1000);
 		camera.position.z = 250;
 		// camera.position.x = 400;
@@ -115,6 +122,8 @@ export class FurnitureComponent implements OnInit {
 		backgroundMesh.material.depthTest = false;
 		backgroundMesh.material.depthWrite = true;
 
+		this.currentObject = backgroundMesh;
+
 		let backgroundScene = new THREE.Scene();
 		let backgroundCamera = new THREE.Camera();
 		backgroundScene.add(backgroundCamera);
@@ -160,6 +169,8 @@ export class FurnitureComponent implements OnInit {
 			// ---------------	
 		};
 
+		this.functionModalChair = modelChair;
+
 		function modelBed() {
 			let mtlLoaderBed = new THREE.MTLLoader();
 			mtlLoaderBed.setBaseUrl('assets/models/bed/');
@@ -202,6 +213,7 @@ export class FurnitureComponent implements OnInit {
 			scene.add(mesh);
 			// ---------------	
 		};
+		this.functionModelBed = modelBed;
 
 		function modelCycle() {
 			let mtlLoaderBed = new THREE.MTLLoader();
@@ -274,7 +286,7 @@ export class FurnitureComponent implements OnInit {
 			scene.add(mesh);
 			// ---------------	
 		};
-
+		this.functionModelOfficeChair = modelOfficeChair;
 
 		function onWindowResize() {
 			camera.aspect = innerW / window.innerHeight;
@@ -320,7 +332,31 @@ export class FurnitureComponent implements OnInit {
 
 	selectModel() {
 		localStorage.setItem('app.model', this.appModels);
-		location.reload()
+		//location.reload();
+		console.log(this.appModels);
+		for (let i = 0; i < this.currentScene.children.length; i++) {
+			let child = this.currentScene.children[i];
+			console.log(child);
+			if (child.type === 'Group') {
+				this.currentScene.remove(child);
+				this.showModel(this.appModels);
+				break;
+			}
+		}
+	}
+
+	showModel(model) {
+		switch (model) {
+			case "chair":
+			this.functionModalChair();
+			break;
+			case "officechair":
+			this.functionModelOfficeChair();
+			break;
+			default: 
+			this.functionModelBed();
+			break;
+		}
 	}
 
 	setTextureTop(texture) {
@@ -332,5 +368,4 @@ export class FurnitureComponent implements OnInit {
 		localStorage.setItem('app.texture.legs', texture);
 		location.reload()
 	}
-
 }
