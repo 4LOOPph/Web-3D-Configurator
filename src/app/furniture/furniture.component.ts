@@ -181,8 +181,8 @@ export class FurnitureComponent implements OnInit {
 			mtlLoaderBed.load('juniorBed.mtl', function (materials) {
 
 				materials.preload();
-				// materials.materials.Wood.map.magFilter = THREE.NearestFilter;
-				// materials.materials.Wood.map.minFilter = THREE.LinearFilter;
+				materials.materials.Wood.map.magFilter = THREE.NearestFilter;
+				materials.materials.Wood.map.minFilter = THREE.LinearFilter;
 
 				let objLoaderBed = new THREE.OBJLoader();
 				objLoaderBed.setMaterials(materials);
