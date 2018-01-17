@@ -117,19 +117,8 @@ export class FurnitureComponent implements OnInit {
 
 					scene.add(object);
 				});
-
 			});
-			// ---------------BOX GUIDE HERE
-			var geometry = new THREE.BoxGeometry(50, 50, 50);
-			var material = new THREE.MeshBasicMaterial({
-				color: '#c0c0c0',
-			});
-			var mesh = new THREE.Mesh(
-				geometry,
-				material
-			);
-			scene.add(mesh);
-			// ---------------	
+				
 		};
 
 		function modelBed() {
@@ -256,13 +245,13 @@ export class FurnitureComponent implements OnInit {
 			renderer.render(scene, camera);
 		};
 
-		animate();
+		animate();		
 	}
 
 	selectModel() {
 		console.log('selectModel: ', this.appModels);
 		localStorage.setItem('app.model', this.appModels);
 		location.reload()
-	}
+	}	
 
 }
