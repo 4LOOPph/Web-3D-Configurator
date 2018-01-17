@@ -30,6 +30,7 @@ export class FurnitureComponent implements OnInit {
 		let backgroundMesh: any;
 		let texturePainting: any;
 		let controls: any;
+		let _mesh: any;
 
 		let innerW = document.getElementById('rendererDiv').offsetWidth;
 		let innerH = document.getElementById('rendererDiv').offsetHeight;
@@ -175,7 +176,7 @@ export class FurnitureComponent implements OnInit {
 					// object.position.y = -43;
 					// object.position.z = 230;
 					// object.scale.set(1, 1, 1);
-					// object.rotation.x = .01;
+					//object.rotation.x = .01;
 					// object.rotation.y = -4.7;
 
 					// boundingBox.setFromObject(object);
@@ -192,13 +193,19 @@ export class FurnitureComponent implements OnInit {
 			var material = new THREE.MeshBasicMaterial({
 				color: '#c0c0c0',
 			});
-			var mesh = new THREE.Mesh(
+			_mesh = new THREE.Mesh(
 				geometry,
-				material
+				mtlLoaderBed
 			);
-			scene.add(mesh);
-			// ---------------	
+
+			document.addEventListener("click", rotate, false);
+			scene.add(_mesh);
 		};
+
+		function rotate(){
+			console.log("test");
+			modelChair();
+		}
 
 		function modelCycle() {
 			let mtlLoaderBed = new THREE.MTLLoader();
