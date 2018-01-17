@@ -45,11 +45,11 @@ export class FurnitureComponent implements OnInit {
 		}
 
 		let scene = new THREE.Scene();
-		let camera = new THREE.PerspectiveCamera(75, innerW / window.innerHeight, 0.1, 100000);
-		camera.position.z = 100;
-		camera.position.x = 400;
-		camera.position.y = 150;
-		camera.lookAt(new THREE.Vector3(0, 0, 0));
+		let camera = new THREE.PerspectiveCamera(75, innerW / window.innerHeight, 0.1, 1000);
+		camera.position.z = 250;
+		// camera.position.x = 400;
+		// camera.position.y = 150;
+		camera.lookAt(new THREE.Vector3(10, 10, 50));
 
 		let light = new THREE.PointLight(0xEEEEEE);
 		light.position.set(20, 0, 20);
@@ -176,8 +176,8 @@ export class FurnitureComponent implements OnInit {
 					// object.position.y = -43;
 					// object.position.z = 230;
 					// object.scale.set(1, 1, 1);
-					// object.rotation.x = .01;
-					// object.rotation.y = -4.7;
+					//object.rotation.x = 10;
+					object.rotation.y = -4.7;
 
 					// boundingBox.setFromObject(object);
 					// var center = boundingBox.getCenter();
@@ -282,13 +282,18 @@ export class FurnitureComponent implements OnInit {
 
 		function control() {
 			controls = new THREE.OrbitControls(camera, renderer.domElement);
-			controls.enableDamping = true;
-			controls.dampingFactor = 0.25;
-			controls.enableZoom = true;
+			// controls.enableDamping = true;
+			// controls.dampingFactor = 0.25;
+			// controls.enableZoom = true;
 			// controls.minPolarAngle = 0; // radians
 			// controls.maxPolarAngle = Math.PI; // radians
 			// controls.minAzimuthAngle = 0; // radians
 			// controls.maxAzimuthAngle = Math.PI; // radians
+			controls.minDistance = 0;
+			//controls.maxDistance = 3;
+			controls.minPolarAngle = 0; // radians
+			controls.maxPolarAngle = Math.PI; // radians
+			controls.maxPolarAngle = Math.PI/2; 
 		};
 
 		control();
