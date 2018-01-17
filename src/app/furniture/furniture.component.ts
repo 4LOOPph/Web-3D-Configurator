@@ -35,6 +35,7 @@ export class FurnitureComponent implements OnInit {
 		let objects: any[] = [];
 		let backgroundMesh: any;
 		let texturePainting: any;
+		let texturePainting2: any;
 		let controls: any;
 
 		let innerW = document.getElementById('rendererDiv').offsetWidth;
@@ -70,7 +71,13 @@ export class FurnitureComponent implements OnInit {
 		document.getElementById('renderHere').style.cssText = 'margin-right: 50px; border: 1px solid black;';
 		document.getElementById('renderHere').appendChild(renderer.domElement);
 
-		let boundingBox = new THREE.Box3();
+		const textureLoader = new THREE.TextureLoader();
+		textureLoader.crossOrigin = "Anonymous";
+
+		let url: string = "assets/img/table/top/" + appTextureTop + ".jpg";
+		let url2: string = "assets/img/table/" + appTextureLegs + ".jpg";
+		texturePainting = textureLoader.load(url);
+		texturePainting2 = textureLoader.load(url2);
 
 		if (appModel === 'chair') {
 			backgroundMesh = new THREE.Mesh(
@@ -79,13 +86,6 @@ export class FurnitureComponent implements OnInit {
 					map: modelChair()
 				})
 			);
-
-			if (appTextureTop === '1') {
-				texturePainting = new THREE.TextureLoader().load("textures/water.jpg");
-				texturePainting.wrapS = THREE.RepeatWrapping;
-				texturePainting.wrapT = THREE.RepeatWrapping;
-				texturePainting.repeat.set(4, 4);
-			}
 		} else if (appModel === 'officechair') {
 			backgroundMesh = new THREE.Mesh(
 				new THREE.PlaneGeometry(10, 10, 10, 10),
@@ -96,15 +96,12 @@ export class FurnitureComponent implements OnInit {
 
 			if (appTextureTop === '1') {
 				texturePainting = new THREE.TextureLoader().load("assets/img/table/top/1.jpg");
-				texturePainting.wrapS = THREE.RepeatWrapping;
-				texturePainting.wrapT = THREE.RepeatWrapping;
-				texturePainting.repeat.set(4, 4);
-
+				// texturePainting.wrapS = THREE.RepeatWrapping;
+				// texturePainting.wrapT = THREE.RepeatWrapping;
 			} else if (appTextureTop === '2') {
 				texturePainting = new THREE.TextureLoader().load("assets/img/table/top/1.jpg");
-				texturePainting.wrapS = THREE.RepeatWrapping;
-				texturePainting.wrapT = THREE.RepeatWrapping;
-				texturePainting.repeat.set(4, 4);
+				// texturePainting.wrapS = THREE.RepeatWrapping;
+				// texturePainting.wrapT = THREE.RepeatWrapping;
 			}
 		} else if (appModel === 'bed') {
 			backgroundMesh = new THREE.Mesh(
@@ -137,8 +134,10 @@ export class FurnitureComponent implements OnInit {
 			mtlLoaderChair.setPath('assets/models/chair/');
 			mtlLoaderChair.load('chair.mtl', function (materials) {
 				materials.preload();
+
 				materials.materials.fusta_taula.map.magFilter = THREE.NearestFilter;
 				materials.materials.fusta_taula.map.minFilter = THREE.LinearFilter;
+
 
 				let objLoaderChair = new THREE.OBJLoader();
 				objLoaderChair.setMaterials(materials);
@@ -149,16 +148,32 @@ export class FurnitureComponent implements OnInit {
 					center3DModel(object);
 
 					object.rotation.y = 0;
+					camera.position.z = 500;
 
-					boundingBox.setFromObject(object);
-					var center = boundingBox.getCenter();
-					controls.target = center;
+					object.traverse(function (child) {
+						console.log('chld', child.material);
+						if (child.material && child.material.name === 'fusta_taula') {
+							console.log('texturePainting2: ', texturePainting2);
+							if (texturePainting2) {
+								child.material.map = texturePainting2;
+								child.material.needsUpdate = true
+							}
+						}
+
+						if (child.material && child.material.name === 'coixi_cadira') {
+							console.log('texturePainting: ', texturePainting);
+							if (texturePainting) {
+								child.material.map = texturePainting;
+								child.material.needsUpdate = true
+							}
+						}
+					});
+
 
 					scene.add(object);
-					camera.position.z = 500;
 				});
 			});
-				
+
 		};
 		this.functionModalChair = modelChair;
 
@@ -176,11 +191,31 @@ export class FurnitureComponent implements OnInit {
 				objLoaderBed.setMaterials(materials);
 				objLoaderBed.setPath('assets/models/bed/');
 				objLoaderBed.load('juniorBed.obj', function (object) {
-					object.scale.set(1, 1, 1);
+					object.scale.set(2, 2, 2);
 					// <position object>
 					center3DModel(object);
-
 					object.rotation.y = -4.7;
+
+					object.traverse(function (child) {
+						console.log('chld', child.material);
+						/* if (child.material && child.material.name === 'fusta_taula') {
+							console.log('texturePainting2: ', texturePainting2);
+							if (texturePainting2) {
+								child.material.map = texturePainting2;
+								child.material.needsUpdate = true
+							}
+						}
+
+						if (child.material && child.material.name === 'coixi_cadira') {
+							console.log('texturePainting: ', texturePainting);
+							if (texturePainting) {
+								child.material.map = texturePainting;
+								child.material.needsUpdate = true
+							}
+						} */
+					});
+
+
 					scene.add(object);
 				});
 			});
@@ -206,9 +241,28 @@ export class FurnitureComponent implements OnInit {
 					object.scale.set(260, 260, 260);
 					// <position object>
 					center3DModel(object);
+					camera.position.z = 600;
+
+					object.traverse(function (child) {
+						console.log('chld', child.material);
+						/* if (child.material && child.material.name === 'fusta_taula') {
+							console.log('texturePainting2: ', texturePainting2);
+							if (texturePainting2) {
+								child.material.map = texturePainting2;
+								child.material.needsUpdate = true
+							}
+						}
+
+						if (child.material && child.material.name === 'coixi_cadira') {
+							console.log('texturePainting: ', texturePainting);
+							if (texturePainting) {
+								child.material.map = texturePainting;
+								child.material.needsUpdate = true
+							}
+						} */
+					});
 
 					scene.add(object);
-					camera.position.z = 600;
 				});
 			});
 		};
@@ -256,7 +310,7 @@ export class FurnitureComponent implements OnInit {
 			var valX = (thsOBJ.getSize().x);
 			var valY = (thsOBJ.getSize().y);
 			var valZ = (thsOBJ.getSize().z);
-		
+
 			return object.position.set(((thsOBJ.getCenter().x) * -1), (valY * -1) / 2, ((thsOBJ.getCenter().z) * -1));
 		}
 	}
