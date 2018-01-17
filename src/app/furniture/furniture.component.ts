@@ -59,7 +59,8 @@ export class FurnitureComponent implements OnInit {
 		camera.lookAt(new THREE.Vector3(10, 10, 50));
 
 		let light = new THREE.PointLight(0xEEEEEE);
-		light.position.set(20, 0, 20);
+		//light.position.set(20, 0, 20);
+		light.position.y = 300;
 		scene.add(light);
 
 		let lightAmb = new THREE.AmbientLight(0x777777);
