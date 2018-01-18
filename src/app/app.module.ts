@@ -11,6 +11,7 @@ import { FurnitureComponent } from './furniture/furniture.component';
 import { CarsComponent } from './cars/cars.component';
 import { BasiclayoutComponent } from './layout/basiclayout/basiclayout.component';
 import { Furniture2Component } from './furniture2/furniture2.component';
+import { FbxsampleComponent } from './fbxsample/fbxsample.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { Furniture2Component } from './furniture2/furniture2.component';
     FurnitureComponent,
     CarsComponent,
     BasiclayoutComponent,
-    Furniture2Component
+    Furniture2Component,
+    FbxsampleComponent
   ],
   imports: [
     BrowserModule,
