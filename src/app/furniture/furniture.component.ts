@@ -316,6 +316,17 @@ export class FurnitureComponent implements OnInit {
 
 					tableObject = object;
 
+					object.traverse(function (child) {
+						if (child.material) {
+							console.log('chld', child.material);
+							if (texturePainting2) {
+								child.material.map = texturePainting2;
+								// child.material.color.setRGB(0, 54, 135);
+							}
+							child.material.needsUpdate = true;
+						}
+					});
+
 					object.updateMatrix();
 
 					scene.add(object);
