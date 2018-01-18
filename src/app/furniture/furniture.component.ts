@@ -14,17 +14,18 @@ export class FurnitureComponent implements OnInit {
 	currentObject: any;
 	currentScene: any;
 
+	tableObject: any;
+
 	functionModalChair: any;
 	functionModelOfficeChair: any;
 	functionModelBed: any;
-	functionModelTest:any;
+	functionModelTest: any;
 
 	constructor() {
 
 	}
 
 	ngOnInit() {
-		console.log('ngInit')
 		if (!Detector.webgl) Detector.addGetWebGLMessage();
 
 		this.initGUI();
@@ -36,17 +37,19 @@ export class FurnitureComponent implements OnInit {
 		let objects: any[] = [];
 		let backgroundMesh: any;
 		let texturePainting: any;
+		let texturePainting2: any;
+		let texturePainting_Table: any;
+
 		let controls: any;
 		let _mesh: any;
+
+		let tableObject = this;
 
 		let innerW = document.getElementById('rendererDiv').offsetWidth;
 		let innerH = document.getElementById('rendererDiv').offsetHeight;
 		let appModel = localStorage.getItem('app.model');
 		let appTextureTop = localStorage.getItem('app.texture.top');
 		let appTextureLegs = localStorage.getItem('app.texture.legs');
-		console.log('appModel: ', appModel);
-		console.log('appTextureTop: ', appTextureTop);
-		console.log('appTextureLegs: ', appTextureLegs);
 
 		if (appModel) {
 			this.appModels = appModel;
@@ -61,7 +64,8 @@ export class FurnitureComponent implements OnInit {
 		camera.lookAt(new THREE.Vector3(10, 10, 50));
 
 		let light = new THREE.PointLight(0xEEEEEE);
-		light.position.set(20, 0, 20);
+		//light.position.set(20, 0, 20);
+		light.position.y = 300;
 		scene.add(light);
 
 		let lightAmb = new THREE.AmbientLight(0x777777);
@@ -72,7 +76,27 @@ export class FurnitureComponent implements OnInit {
 		document.getElementById('renderHere').style.cssText = 'margin-right: 50px; border: 1px solid black;';
 		document.getElementById('renderHere').appendChild(renderer.domElement);
 
-		let boundingBox = new THREE.Box3();
+		let url: string = "assets/img/table/top/" + appTextureTop + ".jpg";
+		let url2: string = "assets/img/table/" + appTextureLegs + ".jpg";
+
+
+		const textureLoader = new THREE.TextureLoader();
+		textureLoader.crossOrigin = "Anonymous";
+		texturePainting = textureLoader.load(url);
+		texturePainting2 = textureLoader.load(url2);
+
+
+		/* texturePainting = THREE.ImageUtils.loadTexture(url);
+		texturePainting2 = THREE.ImageUtils.loadTexture(url2); */
+
+		texturePainting.wrapS = THREE.RepeatWrapping;
+		texturePainting.wrapT = THREE.RepeatWrapping;
+		texturePainting.repeat.set(4, 4, 4);
+
+		texturePainting2.wrapS = THREE.RepeatWrapping;
+		texturePainting2.wrapT = THREE.RepeatWrapping;
+		texturePainting2.repeat.set(4, 4, 4);
+
 
 		if (appModel === 'chair') {
 			backgroundMesh = new THREE.Mesh(
@@ -81,13 +105,6 @@ export class FurnitureComponent implements OnInit {
 					map: modelChair()
 				})
 			);
-
-			if (appTextureTop === '1') {
-				texturePainting = new THREE.TextureLoader().load("textures/water.jpg");
-				texturePainting.wrapS = THREE.RepeatWrapping;
-				texturePainting.wrapT = THREE.RepeatWrapping;
-				texturePainting.repeat.set(4, 4);
-			}
 		} else if (appModel === 'officechair') {
 			backgroundMesh = new THREE.Mesh(
 				new THREE.PlaneGeometry(10, 10, 10, 10),
@@ -95,19 +112,6 @@ export class FurnitureComponent implements OnInit {
 					map: modelOfficeChair()
 				})
 			);
-
-			if (appTextureTop === '1') {
-				texturePainting = new THREE.TextureLoader().load("assets/img/table/top/1.jpg");
-				texturePainting.wrapS = THREE.RepeatWrapping;
-				texturePainting.wrapT = THREE.RepeatWrapping;
-				texturePainting.repeat.set(4, 4);
-
-			} else if (appTextureTop === '2') {
-				texturePainting = new THREE.TextureLoader().load("assets/img/table/top/1.jpg");
-				texturePainting.wrapS = THREE.RepeatWrapping;
-				texturePainting.wrapT = THREE.RepeatWrapping;
-				texturePainting.repeat.set(4, 4);
-			}
 		} else if (appModel === 'bed') {
 			backgroundMesh = new THREE.Mesh(
 				new THREE.PlaneGeometry(10, 10, 10, 10),
@@ -115,15 +119,21 @@ export class FurnitureComponent implements OnInit {
 					map: modelBed()
 				})
 			);
+		}
+		else if (appModel === 'table') {
+			backgroundMesh = new THREE.Mesh(
+				new THREE.PlaneGeometry(10, 10, 10, 10),
+				new THREE.MeshBasicMaterial({
+					map: modelNewTable()
+				})
+			)
 		} else {
 			backgroundMesh = new THREE.Mesh(
 				new THREE.PlaneGeometry(10, 10, 10, 10)
 			);
 		}
-
 		backgroundMesh.material.depthTest = false;
 		backgroundMesh.material.depthWrite = true;
-
 		this.currentObject = backgroundMesh;
 
 		let backgroundScene = new THREE.Scene();
@@ -139,8 +149,10 @@ export class FurnitureComponent implements OnInit {
 			mtlLoaderChair.setPath('assets/models/chair/');
 			mtlLoaderChair.load('chair.mtl', function (materials) {
 				materials.preload();
+
 				materials.materials.fusta_taula.map.magFilter = THREE.NearestFilter;
 				materials.materials.fusta_taula.map.minFilter = THREE.LinearFilter;
+
 
 				let objLoaderChair = new THREE.OBJLoader();
 				objLoaderChair.setMaterials(materials);
@@ -148,31 +160,39 @@ export class FurnitureComponent implements OnInit {
 				objLoaderChair.load('chair.obj', function (object) {
 					object.scale.set(400, 400, 400);
 					// <position object>
-					object.position.x = 140;
-					object.position.y = -100;
-					object.position.z = 70;
-					object.rotation.y = 0;
+					center3DModel(object);
 
-					boundingBox.setFromObject(object);
-					var center = boundingBox.getCenter();
-					controls.target = center;
+					object.rotation.y = 0;
+					camera.position.z = 500;
+
+					object.traverse(function (child) {
+						console.log('chld', child.material);
+						if (child.material) {
+							// SEAT
+							if (child.material.name === 'coixi_cadira') {
+								if (texturePainting) {
+									child.material.map = texturePainting;
+									child.material.needsUpdate = true;
+								}
+							}
+
+							// LEGS
+							if (child.material.name === 'fusta_taula') {
+								if (texturePainting2) {
+									child.material.map = texturePainting2;
+									child.material.needsUpdate = true;
+								}
+							}
+							child.material.needsUpdate = true;
+						}
+					});
+					object.updateMatrix();
+
 
 					scene.add(object);
-					camera.position.z = 500;
 				});
+			});
 
-			});
-			// ---------------BOX GUIDE HERE
-			var geometry = new THREE.BoxGeometry(50, 50, 50);
-			var material = new THREE.MeshBasicMaterial({
-				color: '#c0c0c0',
-			});
-			var mesh = new THREE.Mesh(
-				geometry,
-				material
-			);
-			scene.add(mesh);
-			// ---------------	
 		};
 		this.functionModalChair = modelChair;
 
@@ -191,27 +211,46 @@ export class FurnitureComponent implements OnInit {
 				objLoaderBed.setPath('assets/models/bed/');
 
 				objLoaderBed.load('juniorBed.obj', function (object) {
-					object.scale.set(1, 1, 1);
-					// object.position.x = -15;
-					// object.position.y = -150;
-					// object.position.z = 10;
-
+					object.scale.set(2, 2, 2);
+					// <position object>
+					center3DModel(object);
 					object.rotation.y = -4.7;
+
+					object.traverse(function (child) {
+						console.log('chld', child.material);
+						if (child.material) {
+							console.log('chld', child.material);
+							// PILLOW
+							if (child.material.name === 'pillow') {
+								if (texturePainting) {
+									child.material.map = texturePainting;
+									child.material.needsUpdate = true;
+									// child.material.color.setRGB(0, 54, 135);
+								}
+							}
+
+							if (child.material.name === 'couch') {
+								if (texturePainting) {
+									child.material.map = texturePainting;
+									// child.material.color.setRGB(0, 54, 135);
+								}
+							}
+
+							// WOOD
+							if (child.material.name === 'Wood') {
+								if (texturePainting2) {
+									child.material.map = texturePainting2;
+									child.material.needsUpdate = true;
+								}
+							}
+							child.material.needsUpdate = true;
+						}
+					});
+
+
 					scene.add(object);
 				});
 			});
-
-			// ---------------BOX GUIDE HERE
-			// var geometry = new THREE.BoxGeometry(50, 50, 50);
-			// var material = new THREE.MeshBasicMaterial({
-			// 	color: '#c0c0c0',
-			// });
-			// var mesh = new THREE.Mesh(
-			// 	geometry,
-			// 	material
-			// );
-			// scene.add(mesh);
-			// ---------------	
 		};
 		this.functionModelBed = modelBed;
 
@@ -222,55 +261,71 @@ export class FurnitureComponent implements OnInit {
 			mtlLoaderOfficeChair.load('office_chair.mtl', function (materials) {
 				materials.preload();
 
-				if (texturePainting) {
-					console.log('texturePainting: ', texturePainting);
-					materials.map = texturePainting;
-				}
-
 				let objLoaderOfficeChair = new THREE.OBJLoader();
 				objLoaderOfficeChair.setMaterials(materials);
 				objLoaderOfficeChair.setPath('assets/models/office_chair/');
 				objLoaderOfficeChair.load('office_chair.obj', function (object) {
 					object.scale.set(260, 260, 260);
-					object.position.x = 120;
-					object.position.y = -50;
-					object.position.z = 95;
-					scene.add(object);
+					// <position object>
+					center3DModel(object);
 					camera.position.z = 600;
+
+					object.traverse(function (child) {
+						if (child.material) {
+							console.log('chld', child.material);
+							// SEAT
+							if (child.material.name === 'tela_sillon_azul') {
+								if (texturePainting) {
+									child.material.map = texturePainting;
+									child.material.needsUpdate = true;
+								}
+							}
+
+							if (child.material.name === 'plastico_gris') {
+								if (texturePainting2) {
+									// child.material.map = texturePainting2;
+									// child.material.color.setRGB(0, 54, 135);
+								}
+							}
+							child.material.needsUpdate = true;
+						}
+					});
+
+					scene.add(object);
 				});
 			});
-
-			// ---------------BOX GUIDE HERE
-			// var geometry = new THREE.BoxGeometry(50, 50, 50);
-			// var material = new THREE.MeshBasicMaterial({
-			// 	color: '#c0c0c0',
-			// });
-			// var mesh = new THREE.Mesh(
-			// 	geometry,
-			// 	material
-			// );
-			// scene.add(mesh);
-			// ---------------	
 		};
 		this.functionModelOfficeChair = modelOfficeChair;
 
 
-		function modelNewChair() {
-			console.log("testsadas");
-			var loader = new THREE.JSONLoader();
-			loader.load('assets/models/ChairFBX/Chair.json', handle_load);
+		function modelNewTable() {
+			let mtlLoaderOfficeChair = new THREE.MTLLoader();
+			mtlLoaderOfficeChair.setBaseUrl('assets/models/Table/');
+			mtlLoaderOfficeChair.setPath('assets/models/Table/');
+			mtlLoaderOfficeChair.load('table.mtl', function (materials) {
+				materials.preload();
+
+				let objLoaderOfficeChair = new THREE.OBJLoader();
+				objLoaderOfficeChair.setMaterials(materials);
+				objLoaderOfficeChair.setPath('assets/models/Table/');
+				objLoaderOfficeChair.load('table.obj', function (object) {
+					object.scale.set(260, 260, 260);
+					// <position object>
+					center3DModel(object);
+					camera.position.z = 600;
+
+					tableObject = object;
+
+					object.updateMatrix();
+
+					scene.add(object);
+				});
+			});
 		};
 
-		this.functionModelTest = modelNewChair;
+		this.tableObject = tableObject;
 
-		function handle_load(geometry, materials){
-			var mesh = new THREE.MeshLambertMaterial({morpTargets: true});
-			scene.add(mesh);
-			mesh.scale.set(1, 1, 1);
-					mesh.x = 120;
-					mesh.y = -50;
-					mesh.z = 95;
-		}
+		this.functionModelTest = modelNewTable;
 
 		function onWindowResize() {
 			camera.aspect = innerW / window.innerHeight;
@@ -308,6 +363,15 @@ export class FurnitureComponent implements OnInit {
 		};
 
 		animate();
+
+		function center3DModel(object) {
+			var thsOBJ = new THREE.Box3().setFromObject(object);
+			var valX = (thsOBJ.getSize().x);
+			var valY = (thsOBJ.getSize().y);
+			var valZ = (thsOBJ.getSize().z);
+
+			return object.position.set(((thsOBJ.getCenter().x) * -1), (valY * -1) / 2, ((thsOBJ.getCenter().z) * -1));
+		}
 	}
 
 	selectModel() {
@@ -315,15 +379,15 @@ export class FurnitureComponent implements OnInit {
 		this.showModel(this.appModels);
 		//location.reload();
 		console.log(this.appModels);
-		// for (let i = 0; i < this.currentScene.children.length; i++) {
-		// 	let child = this.currentScene.children[i];
-		// 	console.log(child);
-		// 	if (child.type === 'Group') {
-		// 		this.currentScene.remove(child);
-		// 		this.showModel(this.appModels);
-		// 		break;
-		// 	}
-		// }
+		for (let i = 0; i < this.currentScene.children.length; i++) {
+			let child = this.currentScene.children[i];
+			console.log(child);
+			if (child.type === 'Group') {
+				this.currentScene.remove(child);
+				this.showModel(this.appModels);
+				break;
+			}
+		}
 	}
 
 	showModel(model) {
@@ -334,18 +398,42 @@ export class FurnitureComponent implements OnInit {
 			case "officechair":
 				this.functionModelOfficeChair();
 				break;
-			case "test":
-				this.functionModelOfficeChair();
+			case "bed":
+				this.functionModelBed();
+				break;
+			case "table":
+				this.functionModelTest();
 				break;
 			default:
-				this.functionModelTest();
+
 				break;
 		}
 	}
 
 	setTextureTop(texture) {
-		localStorage.setItem('app.texture.top', texture);
-		location.reload()
+		if (texture == "tableture") {
+
+			let url: string = "assets/models/Table/Gio_Normal.jpn";
+
+			console.log(this.tableObject);
+			const textureLoader = new THREE.TextureLoader();
+			textureLoader.crossOrigin = "Anonymous";
+			let texturePainting = textureLoader.load(url);
+
+			this.tableObject.traverse(function (child) {
+				if (child.material) {
+					if (child.material.name == "MeshPhongMaterial") {
+						if (texturePainting) {
+							child.material.map = texturePainting;
+							child.material.needsUpdate = true;
+						}
+					}
+				}
+			});
+		} else {
+			localStorage.setItem('app.texture.top', texture);
+			location.reload()
+		}
 	}
 
 	setTextureLegs(texture) {
