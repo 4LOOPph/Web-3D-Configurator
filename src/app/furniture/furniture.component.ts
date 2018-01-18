@@ -314,7 +314,13 @@ export class FurnitureComponent implements OnInit {
 					center3DModel(object);
 					camera.position.z = 600;
 
-					tableObject = object;
+					// tableObject = object;
+
+					object.traverse(function (child) {
+						if (child.material) {
+							console.log('chld', child.material);
+						}
+					});
 
 					object.traverse(function (child) {
 						if (child.material) {
