@@ -1,3 +1,128 @@
-<p>
-  fbxsample works!
-</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group">
+        <div class="col-md-12 mb-3">
+          <select class="form-control" id="inputGroupSelect01" [(ngModel)]="appModels" (change)="selectModel()">
+            <option selected value="">Select Model</option>
+            <option value="chair">Chair</option>
+            <option value="officechair">Office Chair</option>
+            <option value="bed">Bed</option>
+            <option value="table">Table</option>
+            <option value="sofa">Sofa</option>
+          </select>
+        </div>
+      </div>
+      <div id="accordion" role="tablist">
+        <div class="card mb-1">
+          <div class="card-header" role="tab" id="headingOne">
+            <h5 class="mb-0">
+              <a role="button" aria-expanded="true" aria-controls="collapseOne">
+                Sizes
+              </a>
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <div class="col-md-12 mb-3">
+                <select class="form-control" id="inputGroupSelect01">
+                  <option selected>Choose...</option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card mb-1">
+          <div class="card-header" role="tab" id="headingTwo">
+            <h5 class="mb-0">
+              <a role="button" aria-expanded="false" aria-controls="collapseTwo">
+                Top
+              </a>
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="card ml-2">
+                <img src="./assets/img/table/top/1.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureTop('1');">
+              </div>
+              <div class="card ml-2">
+                <img src="./assets/img/table/top/2.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureTop('2');">
+              </div>
+              <div class="card ml-2">
+                <img src="./assets/img/table/top/3.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureTop('3');">
+              </div>
+              <div class="card ml-2">
+                <img src="./assets/img/table/top/4.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureTop('4');">
+              </div>
+              <div class="card ml-2">
+                <img src="./assets/img/table/top/5.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureTop('5');">
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="card ml-2">
+                <img src="./assets/img/table/top/6.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureTop('6');">
+              </div>
+              <div class="card ml-2">
+                <img src="./assets/img/table/top/7.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureTop('7');">
+              </div>
+              <div class="card ml-2">
+                <img src="./assets/img/table/top/8.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureTop('8');">
+              </div>
+              <div class="card ml-2">
+                <img src="./assets/img/table/top/9.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureTop('9');">
+              </div>
+              <div class="card ml-2">
+                <img src="./assets/img/table/top/9.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureTop('tableture');">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" role="tab" id="headingThree">
+            <h5 class="mb-0">
+              <a role="button" aria-expanded="false" aria-controls="collapseThree">
+                Legs and Rails
+              </a>
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="card ml-2">
+                <img src="./assets/img/table/1.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureLegs('1');">
+              </div>
+              <div class="card ml-2">
+                <img src="./assets/img/table/2.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureLegs('2');">
+              </div>
+              <div class="card ml-2">
+                <img src="./assets/img/table/3.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureLegs('3');">
+              </div>
+              <div class="card ml-2">
+                <img src="./assets/img/table/4.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureLegs('4');">
+              </div>
+              <div class="card ml-2">
+                <img src="./assets/img/table/5.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureLegs('5');">
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="card ml-2">
+                <img src="./assets/img/table/6.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureLegs('6');">
+              </div>
+              <div class="card ml-2">
+                <img src="./assets/img/table/7.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureLegs('7');">
+              </div>
+              <div class="card ml-2">
+                <img src="./assets/img/table/8.jpg" alt="Card image cap" style="width: 45px;height: 45px;" (click)="setTextureLegs('8');">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-9" id="rendererDiv">
+      <div id="renderHere"></div>
+    </div>
+  </div>
+</div>

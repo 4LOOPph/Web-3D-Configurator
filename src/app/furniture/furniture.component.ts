@@ -20,6 +20,7 @@ export class FurnitureComponent implements OnInit {
 	functionModelOfficeChair: any;
 	functionModelBed: any;
 	functionModelTest: any;
+	functionModelSofa: any;
 
 	constructor() {
 
@@ -119,14 +120,20 @@ export class FurnitureComponent implements OnInit {
 					map: modelBed()
 				})
 			);
-		}
-		else if (appModel === 'table') {
+		} else if (appModel === 'table') {
 			backgroundMesh = new THREE.Mesh(
 				new THREE.PlaneGeometry(10, 10, 10, 10),
 				new THREE.MeshBasicMaterial({
 					map: modelNewTable()
 				})
-			)
+			);
+		} else if (appModel === 'sofa') {
+			backgroundMesh = new THREE.Mesh(
+				new THREE.PlaneGeometry(10, 10, 10, 10),
+				new THREE.MeshBasicMaterial({
+					map: modelSofa()
+				})
+			);
 		} else {
 			backgroundMesh = new THREE.Mesh(
 				new THREE.PlaneGeometry(10, 10, 10, 10)
@@ -134,6 +141,8 @@ export class FurnitureComponent implements OnInit {
 		}
 		backgroundMesh.material.depthTest = false;
 		backgroundMesh.material.depthWrite = true;
+		console.log('backgroundMesh: ', backgroundMesh);
+
 		this.currentObject = backgroundMesh;
 
 		let backgroundScene = new THREE.Scene();
@@ -297,7 +306,6 @@ export class FurnitureComponent implements OnInit {
 		};
 		this.functionModelOfficeChair = modelOfficeChair;
 
-
 		function modelNewTable() {
 			let mtlLoaderOfficeChair = new THREE.MTLLoader();
 			mtlLoaderOfficeChair.setBaseUrl('assets/models/Table/');
@@ -315,13 +323,6 @@ export class FurnitureComponent implements OnInit {
 					camera.position.z = 600;
 
 					// tableObject = object;
-
-					object.traverse(function (child) {
-						if (child.material) {
-							console.log('chld', child.material);
-						}
-					});
-
 					object.traverse(function (child) {
 						if (child.material) {
 							console.log('chld', child.material);
@@ -334,13 +335,55 @@ export class FurnitureComponent implements OnInit {
 					});
 
 					object.updateMatrix();
-
 					scene.add(object);
 				});
 			});
 		};
-
 		this.tableObject = tableObject;
+
+		function modelSofa() {
+			const _textureLoader = new THREE.TextureLoader();
+
+			let mtlLoaderSofa = new THREE.MTLLoader();
+			mtlLoaderSofa.setBaseUrl('assets/models/Sofa_FBX/');
+			mtlLoaderSofa.setPath('assets/models/Sofa_FBX/');
+			mtlLoaderSofa.load('Sofa.mtl', function (materials) {
+				materials.preload();
+				console.log('materials', materials);
+
+				let objLoaderOfficeChair = new THREE.OBJLoader();
+				objLoaderOfficeChair.setMaterials(materials);
+				objLoaderOfficeChair.setPath('assets/models/Sofa_FBX/');
+				objLoaderOfficeChair.load('Sofa.obj', function (object) {
+					object.scale.set(260, 260, 260);
+
+					center3DModel(object);
+					camera.position.z = 600;
+
+					object.traverse(function (child) {
+						if (child.material) {
+							if (child instanceof THREE.Mesh) {
+								console.log('THREE.Mesh');
+								child.geometry.computeVertexNormals();
+							}
+							if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial) {
+								console.log('MeshPhongMaterial');
+								child.material.map = _textureLoader.load('assets/models/Sofa_FBX/Sofa_AlbedoTransparency.png');
+								child.material.aoMap = _textureLoader.load('assets/models/Sofa_FBX/Sofa_AO.png');
+								child.material.metalnessMap = _textureLoader.load('assets/models/Sofa_FBX/Sofa_MetallicSmoothness.png');
+								child.material.normalMap = _textureLoader.load('assets/models/Sofa_FBX/Sofa_Normal.png');
+							}
+							console.log('chld', child.material);
+							child.material.needsUpdate = true;
+						}
+					});
+
+					object.updateMatrix();
+					scene.add(object);
+				});
+			});
+		}
+		this.functionModelSofa = modelSofa;
 
 		this.functionModelTest = modelNewTable;
 
@@ -421,6 +464,9 @@ export class FurnitureComponent implements OnInit {
 			case "table":
 				this.functionModelTest();
 				break;
+			case "sofa":
+				this.functionModelSofa();
+				break;
 			default:
 
 				break;
@@ -429,9 +475,7 @@ export class FurnitureComponent implements OnInit {
 
 	setTextureTop(texture) {
 		if (texture == "tableture") {
-
 			let url: string = "assets/models/Table/Gio_Normal.jpn";
-
 			console.log(this.tableObject);
 			const textureLoader = new THREE.TextureLoader();
 			textureLoader.crossOrigin = "Anonymous";
