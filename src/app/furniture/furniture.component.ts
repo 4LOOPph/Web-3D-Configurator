@@ -11,6 +11,13 @@ declare let Detector: any;
 export class FurnitureComponent implements OnInit {
 	title = 'app';
 	appModels: any = "";
+	currentObject: any;
+	currentScene: any;
+
+	functionModalChair: any;
+	functionModelOfficeChair: any;
+	functionModelBed: any;
+	functionModelTest:any;
 
 	constructor() {
 
@@ -46,11 +53,12 @@ export class FurnitureComponent implements OnInit {
 		}
 
 		let scene = new THREE.Scene();
+		this.currentScene = scene;
 		let camera = new THREE.PerspectiveCamera(75, innerW / window.innerHeight, 0.1, 1000);
-		camera.position.z = 100;
-		camera.position.x = 400;
-		camera.position.y = 150;
-		camera.lookAt(new THREE.Vector3(0, 0, 0));
+		camera.position.z = 250;
+		// camera.position.x = 400;
+		// camera.position.y = 150;
+		camera.lookAt(new THREE.Vector3(10, 10, 50));
 
 		let light = new THREE.PointLight(0xEEEEEE);
 		light.position.set(20, 0, 20);
@@ -61,9 +69,10 @@ export class FurnitureComponent implements OnInit {
 
 		let renderer = new THREE.WebGLRenderer({ antialias: true });
 		renderer.setSize(innerW, window.innerHeight);
+		document.getElementById('renderHere').style.cssText = 'margin-right: 50px; border: 1px solid black;';
 		document.getElementById('renderHere').appendChild(renderer.domElement);
 
-		var boundingBox = new THREE.Box3();
+		let boundingBox = new THREE.Box3();
 
 		if (appModel === 'chair') {
 			backgroundMesh = new THREE.Mesh(
@@ -115,6 +124,8 @@ export class FurnitureComponent implements OnInit {
 		backgroundMesh.material.depthTest = false;
 		backgroundMesh.material.depthWrite = true;
 
+		this.currentObject = backgroundMesh;
+
 		let backgroundScene = new THREE.Scene();
 		let backgroundCamera = new THREE.Camera();
 		backgroundScene.add(backgroundCamera);
@@ -126,7 +137,7 @@ export class FurnitureComponent implements OnInit {
 			let mtlLoaderChair = new THREE.MTLLoader();
 			mtlLoaderChair.setBaseUrl('assets/models/chair/');
 			mtlLoaderChair.setPath('assets/models/chair/');
-			mtlLoaderChair.load('chair.mtl', function(materials) {
+			mtlLoaderChair.load('chair.mtl', function (materials) {
 				materials.preload();
 				materials.materials.fusta_taula.map.magFilter = THREE.NearestFilter;
 				materials.materials.fusta_taula.map.minFilter = THREE.LinearFilter;
@@ -134,14 +145,20 @@ export class FurnitureComponent implements OnInit {
 				let objLoaderChair = new THREE.OBJLoader();
 				objLoaderChair.setMaterials(materials);
 				objLoaderChair.setPath('assets/models/chair/');
-				objLoaderChair.load('chair.obj', function(object) {
+				objLoaderChair.load('chair.obj', function (object) {
 					object.scale.set(400, 400, 400);
 					// <position object>
 					object.position.x = 140;
 					object.position.y = -100;
 					object.position.z = 70;
+					object.rotation.y = 0;
+
+					boundingBox.setFromObject(object);
+					var center = boundingBox.getCenter();
+					controls.target = center;
 
 					scene.add(object);
+					camera.position.z = 500;
 				});
 
 			});
@@ -157,12 +174,13 @@ export class FurnitureComponent implements OnInit {
 			scene.add(mesh);
 			// ---------------	
 		};
+		this.functionModalChair = modelChair;
 
 		function modelBed() {
 			let mtlLoaderBed = new THREE.MTLLoader();
 			mtlLoaderBed.setBaseUrl('assets/models/bed/');
 			mtlLoaderBed.setPath('assets/models/bed/');
-			mtlLoaderBed.load('juniorBed.mtl', function(materials) {
+			mtlLoaderBed.load('juniorBed.mtl', function (materials) {
 
 				materials.preload();
 				materials.materials.Wood.map.magFilter = THREE.NearestFilter;
@@ -171,78 +189,37 @@ export class FurnitureComponent implements OnInit {
 				let objLoaderBed = new THREE.OBJLoader();
 				objLoaderBed.setMaterials(materials);
 				objLoaderBed.setPath('assets/models/bed/');
-				objLoaderBed.load('juniorBed.obj', function(object) {
-					// object.position.x = 35;
-					// object.position.y = -43;
-					// object.position.z = 230;
-					// object.scale.set(1, 1, 1);
-					//object.rotation.x = .01;
-					// object.rotation.y = -4.7;
 
-					// boundingBox.setFromObject(object);
-					// var center = boundingBox.getCenter();
-					// controls.target = center;
+				objLoaderBed.load('juniorBed.obj', function (object) {
+					object.scale.set(1, 1, 1);
+					// object.position.x = -15;
+					// object.position.y = -150;
+					// object.position.z = 10;
 
-
+					object.rotation.y = -4.7;
 					scene.add(object);
 				});
 			});
 
 			// ---------------BOX GUIDE HERE
-			var geometry = new THREE.BoxGeometry(50, 50, 50);
-			var material = new THREE.MeshBasicMaterial({
-				color: '#c0c0c0',
-			});
-			_mesh = new THREE.Mesh(
-				geometry,
-				mtlLoaderBed
-			);
-
-			document.addEventListener("click", rotate, false);
-			scene.add(_mesh);
-		};
-
-		function rotate(){
-			console.log("test");
-			modelChair();
-		}
-
-		function modelCycle() {
-			let mtlLoaderBed = new THREE.MTLLoader();
-			mtlLoaderBed.setBaseUrl('assets/models/cycle/');
-			mtlLoaderBed.setPath('assets/models/cycle/');
-			mtlLoaderBed.load('cycle_model_01.mtl', function(materials) {
-				materials.preload();
-				let objLoaderBed = new THREE.OBJLoader();
-				objLoaderBed.setMaterials(materials);
-				objLoaderBed.setPath('assets/models/cycle/');
-				objLoaderBed.load('cycle_model_01.obj', function(object) {
-					object.position.x = 35;
-					object.position.y = 112;
-					object.scale.set(15, 15, 15);
-					scene.add(object);
-				});
-			});
-
-			// ---------------BOX GUIDE HERE
-			var geometry = new THREE.BoxGeometry(50, 50, 50);
-			var material = new THREE.MeshBasicMaterial({
-				color: '#c0c0c0',
-			});
-			var mesh = new THREE.Mesh(
-				geometry,
-				material
-			);
-			scene.add(mesh);
+			// var geometry = new THREE.BoxGeometry(50, 50, 50);
+			// var material = new THREE.MeshBasicMaterial({
+			// 	color: '#c0c0c0',
+			// });
+			// var mesh = new THREE.Mesh(
+			// 	geometry,
+			// 	material
+			// );
+			// scene.add(mesh);
 			// ---------------	
 		};
-
+		this.functionModelBed = modelBed;
 
 		function modelOfficeChair() {
 			let mtlLoaderOfficeChair = new THREE.MTLLoader();
 			mtlLoaderOfficeChair.setBaseUrl('assets/models/office_chair/');
 			mtlLoaderOfficeChair.setPath('assets/models/office_chair/');
-			mtlLoaderOfficeChair.load('office_chair.mtl', function(materials) {
+			mtlLoaderOfficeChair.load('office_chair.mtl', function (materials) {
 				materials.preload();
 
 				if (texturePainting) {
@@ -253,31 +230,47 @@ export class FurnitureComponent implements OnInit {
 				let objLoaderOfficeChair = new THREE.OBJLoader();
 				objLoaderOfficeChair.setMaterials(materials);
 				objLoaderOfficeChair.setPath('assets/models/office_chair/');
-				objLoaderOfficeChair.load('office_chair.obj', function(object) {
-					object.scale.set(400, 400, 400);
-
-					// boundingBox.setFromObject(object);
-					// var center = boundingBox.getCenter();
-					// controls.minPolarAngle = controls.maxPolarAngle = 60*(Math.PI/180);
-					// controls.target = center;
-
+				objLoaderOfficeChair.load('office_chair.obj', function (object) {
+					object.scale.set(260, 260, 260);
+					object.position.x = 120;
+					object.position.y = -50;
+					object.position.z = 95;
 					scene.add(object);
+					camera.position.z = 600;
 				});
 			});
 
 			// ---------------BOX GUIDE HERE
-			var geometry = new THREE.BoxGeometry(50, 50, 50);
-			var material = new THREE.MeshBasicMaterial({
-				color: '#c0c0c0',
-			});
-			var mesh = new THREE.Mesh(
-				geometry,
-				material
-			);
-			scene.add(mesh);
+			// var geometry = new THREE.BoxGeometry(50, 50, 50);
+			// var material = new THREE.MeshBasicMaterial({
+			// 	color: '#c0c0c0',
+			// });
+			// var mesh = new THREE.Mesh(
+			// 	geometry,
+			// 	material
+			// );
+			// scene.add(mesh);
 			// ---------------	
 		};
+		this.functionModelOfficeChair = modelOfficeChair;
 
+
+		function modelNewChair() {
+			console.log("testsadas");
+			var loader = new THREE.JSONLoader();
+			loader.load('assets/models/ChairFBX/Chair.json', handle_load);
+		};
+
+		this.functionModelTest = modelNewChair;
+
+		function handle_load(geometry, materials){
+			var mesh = new THREE.MeshLambertMaterial({morpTargets: true});
+			scene.add(mesh);
+			mesh.scale.set(1, 1, 1);
+					mesh.x = 120;
+					mesh.y = -50;
+					mesh.z = 95;
+		}
 
 		function onWindowResize() {
 			camera.aspect = innerW / window.innerHeight;
@@ -285,21 +278,22 @@ export class FurnitureComponent implements OnInit {
 			renderer.setSize(innerW, window.innerHeight);
 		}
 
-
 		function control() {
 			controls = new THREE.OrbitControls(camera, renderer.domElement);
 			controls.enableDamping = true;
 			controls.dampingFactor = 0.25;
 			controls.enableZoom = true;
+
+			controls.minDistance = 0;
+			//controls.maxDistance = 3;
 			controls.minPolarAngle = 0; // radians
 			controls.maxPolarAngle = Math.PI; // radians
-			controls.minAzimuthAngle = 0; // radians
-			controls.maxAzimuthAngle = Math.PI; // radians
+			controls.maxPolarAngle = Math.PI / 2;
 		};
 
 		control();
 
-		let animate = function() {
+		let animate = function () {
 			requestAnimationFrame(animate);
 
 			if (color < 0xdddddd) color += 0x0000ff;
@@ -309,7 +303,7 @@ export class FurnitureComponent implements OnInit {
 			if (appModel) {
 				renderer.render(backgroundScene, backgroundCamera);
 			}
-			camera.lookAt( scene.position );
+			camera.lookAt(scene.position);
 			renderer.render(scene, camera);
 		};
 
@@ -318,7 +312,35 @@ export class FurnitureComponent implements OnInit {
 
 	selectModel() {
 		localStorage.setItem('app.model', this.appModels);
-		location.reload()
+		this.showModel(this.appModels);
+		//location.reload();
+		console.log(this.appModels);
+		// for (let i = 0; i < this.currentScene.children.length; i++) {
+		// 	let child = this.currentScene.children[i];
+		// 	console.log(child);
+		// 	if (child.type === 'Group') {
+		// 		this.currentScene.remove(child);
+		// 		this.showModel(this.appModels);
+		// 		break;
+		// 	}
+		// }
+	}
+
+	showModel(model) {
+		switch (model) {
+			case "chair":
+				this.functionModalChair();
+				break;
+			case "officechair":
+				this.functionModelOfficeChair();
+				break;
+			case "test":
+				this.functionModelOfficeChair();
+				break;
+			default:
+				this.functionModelTest();
+				break;
+		}
 	}
 
 	setTextureTop(texture) {
@@ -330,5 +352,4 @@ export class FurnitureComponent implements OnInit {
 		localStorage.setItem('app.texture.legs', texture);
 		location.reload()
 	}
-
 }
