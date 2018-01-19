@@ -362,7 +362,7 @@ export class FurnitureComponent implements OnInit {
 
 				object.traverse(function(child) {
 					if (child.material) {
-						if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial) {							
+						if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial) {
 							child.material.map = _textureLoader.load('assets/models/Sofa_FBX/Sofa_AlbedoTransparency.png');
 							child.material.aoMap = _textureLoader.load('assets/models/Sofa_FBX/Sofa_AO.png');
 							child.material.metalnessMap = _textureLoader.load('assets/models/Sofa_FBX/Sofa_MetallicSmoothness.png');
@@ -380,60 +380,44 @@ export class FurnitureComponent implements OnInit {
 
 		function modelBed_v1() {
 			const _textureLoader = new THREE.TextureLoader();
+			let objLoaderOfficeChair = new THREE.OBJLoader();
+			objLoaderOfficeChair.setPath('assets/models/Bed_v1/');
+			objLoaderOfficeChair.load('Bed.obj', function(object) {
+				object.scale.set(260, 260, 260);
 
-			let mtlLoaderSofa = new THREE.MTLLoader();
-			mtlLoaderSofa.setBaseUrl('assets/models/Bed_v1/');
-			mtlLoaderSofa.setPath('assets/models/Bed_v1/');
-			mtlLoaderSofa.load('Bed.mtl', function (materials) {
-				materials.preload();
-				console.log('materials', materials);
+				center3DModel(object);
+				camera.position.z = 600;
 
-				let objLoaderOfficeChair = new THREE.OBJLoader();
-				objLoaderOfficeChair.setMaterials(materials);
-				objLoaderOfficeChair.setPath('assets/models/Bed_v1/');
-				objLoaderOfficeChair.load('Bed.obj', function (object) {
-					object.scale.set(260, 260, 260);
-
-					center3DModel(object);
-					camera.position.z = 600;
-
-					object.traverse(function (child) {
-						if (child.material) {
-							if (child instanceof THREE.Mesh) {
-								console.log('THREE.Mesh');
-								child.geometry.computeVertexNormals();
+				object.traverse(function(child) {
+					if (child.material) {
+						if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial) {
+							if (child.material.name === "Base") {
+								child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Base_AlbedoTransparency.jpg');
+								child.material.aoMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_AO.jpg');
+								child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_MetallicSmoothness.png');
+								child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_Normal.jpg');
 							}
-							if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial) {
-								console.log('MeshPhongMaterial');
 
-								if (child.material.name === "Base") {
-									child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Base_AlbedoTransparency.jpg');
-									child.material.aoMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_AO.jpg');
-									child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_MetallicSmoothness.png');
-									child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_Normal.jpg');
-								}
-
-								if (child.material.name === "Pillows") {
-									child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_AlbedoTransparency.jpg');
-									child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_MetallicSmoothness.png');
-									child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_Normal.jpg');
-								}
-
-								if (child.material.name === "Covers") {
-									child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_AlbedoTransparency.jpg');
-									child.material.aoMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_AO.jpg');
-									child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_MetallicSmoothness.png');
-									child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_Normal.jpg');
-								}
+							if (child.material.name === "Pillows") {
+								child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_AlbedoTransparency.jpg');
+								child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_MetallicSmoothness.png');
+								child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_Normal.jpg');
 							}
-							console.log('chld', child.material);
-							child.material.needsUpdate = true;
+
+							if (child.material.name === "Covers") {
+								child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_AlbedoTransparency.jpg');
+								child.material.aoMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_AO.jpg');
+								child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_MetallicSmoothness.png');
+								child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_Normal.jpg');
+							}
 						}
-					});
-
-					object.updateMatrix();
-					scene.add(object);
+						console.log('chld', child.material);
+						child.material.needsUpdate = true;
+					}
 				});
+
+				object.updateMatrix();
+				scene.add(object);
 			});
 		}
 		this.functionModelBed_v1 = modelBed_v1;

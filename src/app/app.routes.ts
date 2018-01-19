@@ -13,28 +13,13 @@ export const ROUTES: Routes = [
 	{
 		path: '', component: BasiclayoutComponent,
 		children: [
-			{ path: 'furnitures', component: FurnitureComponent }
-		]
-	},
-	{
-		path: '', component: BasiclayoutComponent,
-		children: [
+			{ path: 'furnitures', component: FurnitureComponent },
 			{ path: 'cars', component: CarsComponent },
-		]
-	},
-	{
-		path: '', component: BasiclayoutComponent,
-		children: [
 			{ path: 'furniture2', component: Furniture2Component },
-		]
-	},
-	{
-		path: '', component: BasiclayoutComponent,
-		children: [
 			{ path: 'fbxsample', component: FbxsampleComponent },
 			{ path: 'test', component: TestComponent },
 		]
 	},
 	// Handle all other routes
-	{ path: '**', redirectTo: 'furnitures' }
+	{ path: '**', redirectTo: 'fbxsample' }
 ];

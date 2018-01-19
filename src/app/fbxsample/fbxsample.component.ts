@@ -18,11 +18,8 @@ export class FbxsampleComponent implements OnInit {
 
   tableObject: any;
 
-  functionModalChair: any;
-  functionModelOfficeChair: any;
-  functionModelBed: any;
-  functionModelTest: any;
   functionModelSofa: any;
+  functionModelBed_v1: any;
 
 
   constructor() { }
@@ -90,23 +87,26 @@ export class FbxsampleComponent implements OnInit {
     document.getElementById('renderHere').style.cssText = 'margin-right: 50px; border: 1px solid black;';
     document.getElementById('renderHere').appendChild(renderer.domElement);
 
-    modelSofa()
+    if (appModel === 'sofa') {
+      modelSofa()
+    } else if (appModel === 'bed_v1') {
+      modelBed_v1()
+    }
 
     window.addEventListener('resize', onWindowResize, false);
 
     function modelSofa() {
       const _textureLoader = new THREE.TextureLoader();
-
       let objLoaderOfficeChair = new THREE.OBJLoader();
       objLoaderOfficeChair.setPath('assets/models/Sofa_FBX/');
-      objLoaderOfficeChair.load('Sofa.obj', function (object) {
+      objLoaderOfficeChair.load('Sofa.obj', function(object) {
         object.scale.set(200, 200, 200);
         center3DModel(object);
         camera.position.z = 600;
-        object.traverse(function (child) {
+        object.traverse(function(child) {
           if (child.material) {
             if (child instanceof THREE.Mesh) {
-              console.log('THREE.Mesh');              
+              console.log('THREE.Mesh');
             }
             if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial) {
               console.log('MeshPhongMaterial');
@@ -125,6 +125,62 @@ export class FbxsampleComponent implements OnInit {
       });
     }
     this.functionModelSofa = modelSofa;
+
+    function modelBed_v1() {
+      const _textureLoader = new THREE.TextureLoader();
+
+      let mtlLoaderSofa = new THREE.MTLLoader();
+      mtlLoaderSofa.setBaseUrl('assets/models/Bed_v1/');
+      mtlLoaderSofa.setPath('assets/models/Bed_v1/');
+      mtlLoaderSofa.load('Bed.mtl', function(materials) {
+        materials.preload();
+        console.log('materials', materials);
+
+        let objLoaderOfficeChair = new THREE.OBJLoader();
+        objLoaderOfficeChair.setMaterials(materials);
+        objLoaderOfficeChair.setPath('assets/models/Bed_v1/');
+        objLoaderOfficeChair.load('Bed.obj', function(object) {
+          object.scale.set(260, 260, 260);
+
+          center3DModel(object);
+          camera.position.z = 600;
+
+          object.traverse(function(child) {
+            if (child.material) {
+              if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial) {
+                console.log('MeshPhongMaterial');
+
+                if (child.material.name === "Base") {
+                  child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Base_AlbedoTransparency.jpg');
+                  child.material.aoMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_AO.jpg');
+                  child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_MetallicSmoothness.png');
+                  child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_Normal.jpg');
+                }
+
+                if (child.material.name === "Pillows") {
+                  child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_AlbedoTransparency.jpg');
+                  child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_MetallicSmoothness.png');
+                  child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_Normal.jpg');
+                }
+
+                if (child.material.name === "Covers") {
+                  child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_AlbedoTransparency.jpg');
+                  child.material.aoMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_AO.jpg');
+                  child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_MetallicSmoothness.png');
+                  child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_Normal.jpg');
+                }
+              }
+              console.log('chld', child.material);
+              child.material.needsUpdate = true;
+            }
+          });
+
+          object.updateMatrix();
+          scene.add(object);
+        });
+      });
+    }
+    this.functionModelBed_v1 = modelBed_v1;
 
 
     function onWindowResize() {
@@ -148,7 +204,7 @@ export class FbxsampleComponent implements OnInit {
 
     control();
 
-    let animate = function () {
+    let animate = function() {
       requestAnimationFrame(animate);
 
       // renderer.setClearColorHex(0xffffff, 1);
@@ -172,6 +228,65 @@ export class FbxsampleComponent implements OnInit {
 
       return object.position.set(((thsOBJ.getCenter().x) * -1), (valY * -1) / 2, ((thsOBJ.getCenter().z) * -1));
     }
+  }
+
+  selectModel() {
+    localStorage.setItem('app.model', this.appModels);
+    //this.showModel(this.appModels);
+    //location.reload();
+    console.log(this.appModels);
+    for (let i = 0; i < this.currentScene.children.length; i++) {
+      let child = this.currentScene.children[i];
+      console.log(child);
+      if (child.type === 'Group') {
+        this.currentScene.remove(child);
+        this.showModel(this.appModels);
+        break;
+      }
+    }
+  }
+
+  showModel(model) {
+    switch (model) {
+      case "sofa":
+        this.functionModelSofa();
+        break;
+      case "bed_v1":
+        this.functionModelBed_v1();
+        break;
+      default:
+
+        break;
+    }
+  }
+
+  setTextureTop(texture) {
+    if (texture == "tableture") {
+      let url: string = "assets/models/Table/Gio_Normal.jpn";
+      console.log(this.tableObject);
+      const textureLoader = new THREE.TextureLoader();
+      textureLoader.crossOrigin = "Anonymous";
+      let texturePainting = textureLoader.load(url);
+
+      this.tableObject.traverse(function(child) {
+        if (child.material) {
+          if (child.material.name == "MeshPhongMaterial") {
+            if (texturePainting) {
+              child.material.map = texturePainting;
+              child.material.needsUpdate = true;
+            }
+          }
+        }
+      });
+    } else {
+      localStorage.setItem('app.texture.top', texture);
+      location.reload()
+    }
+  }
+
+  setTextureLegs(texture) {
+    localStorage.setItem('app.texture.legs', texture);
+    location.reload()
   }
 
 }
