@@ -164,7 +164,7 @@ export class FurnitureComponent implements OnInit {
 			let mtlLoaderChair = new THREE.MTLLoader();
 			mtlLoaderChair.setBaseUrl('assets/models/chair/');
 			mtlLoaderChair.setPath('assets/models/chair/');
-			mtlLoaderChair.load('chair.mtl', function (materials) {
+			mtlLoaderChair.load('chair.mtl', function(materials) {
 				materials.preload();
 
 				materials.materials.fusta_taula.map.magFilter = THREE.NearestFilter;
@@ -174,7 +174,7 @@ export class FurnitureComponent implements OnInit {
 				let objLoaderChair = new THREE.OBJLoader();
 				objLoaderChair.setMaterials(materials);
 				objLoaderChair.setPath('assets/models/chair/');
-				objLoaderChair.load('chair.obj', function (object) {
+				objLoaderChair.load('chair.obj', function(object) {
 					object.scale.set(400, 400, 400);
 					// <position object>
 					center3DModel(object);
@@ -182,7 +182,7 @@ export class FurnitureComponent implements OnInit {
 					object.rotation.y = 0;
 					camera.position.z = 500;
 
-					object.traverse(function (child) {
+					object.traverse(function(child) {
 						console.log('chld', child.material);
 						if (child.material) {
 							// SEAT
@@ -217,7 +217,7 @@ export class FurnitureComponent implements OnInit {
 			let mtlLoaderBed = new THREE.MTLLoader();
 			mtlLoaderBed.setBaseUrl('assets/models/bed/');
 			mtlLoaderBed.setPath('assets/models/bed/');
-			mtlLoaderBed.load('juniorBed.mtl', function (materials) {
+			mtlLoaderBed.load('juniorBed.mtl', function(materials) {
 
 				materials.preload();
 				materials.materials.Wood.map.magFilter = THREE.NearestFilter;
@@ -227,13 +227,13 @@ export class FurnitureComponent implements OnInit {
 				objLoaderBed.setMaterials(materials);
 				objLoaderBed.setPath('assets/models/bed/');
 
-				objLoaderBed.load('juniorBed.obj', function (object) {
+				objLoaderBed.load('juniorBed.obj', function(object) {
 					object.scale.set(2, 2, 2);
 					// <position object>
 					center3DModel(object);
 					object.rotation.y = -4.7;
 
-					object.traverse(function (child) {
+					object.traverse(function(child) {
 						console.log('chld', child.material);
 						if (child.material) {
 							console.log('chld', child.material);
@@ -275,19 +275,19 @@ export class FurnitureComponent implements OnInit {
 			let mtlLoaderOfficeChair = new THREE.MTLLoader();
 			mtlLoaderOfficeChair.setBaseUrl('assets/models/office_chair/');
 			mtlLoaderOfficeChair.setPath('assets/models/office_chair/');
-			mtlLoaderOfficeChair.load('office_chair.mtl', function (materials) {
+			mtlLoaderOfficeChair.load('office_chair.mtl', function(materials) {
 				materials.preload();
 
 				let objLoaderOfficeChair = new THREE.OBJLoader();
 				objLoaderOfficeChair.setMaterials(materials);
 				objLoaderOfficeChair.setPath('assets/models/office_chair/');
-				objLoaderOfficeChair.load('office_chair.obj', function (object) {
+				objLoaderOfficeChair.load('office_chair.obj', function(object) {
 					object.scale.set(260, 260, 260);
 					// <position object>
 					center3DModel(object);
 					camera.position.z = 600;
 
-					object.traverse(function (child) {
+					object.traverse(function(child) {
 						if (child.material) {
 							console.log('chld', child.material);
 							// SEAT
@@ -318,20 +318,20 @@ export class FurnitureComponent implements OnInit {
 			let mtlLoaderOfficeChair = new THREE.MTLLoader();
 			mtlLoaderOfficeChair.setBaseUrl('assets/models/Table/');
 			mtlLoaderOfficeChair.setPath('assets/models/Table/');
-			mtlLoaderOfficeChair.load('table.mtl', function (materials) {
+			mtlLoaderOfficeChair.load('table.mtl', function(materials) {
 				materials.preload();
 
 				let objLoaderOfficeChair = new THREE.OBJLoader();
 				objLoaderOfficeChair.setMaterials(materials);
 				objLoaderOfficeChair.setPath('assets/models/Table/');
-				objLoaderOfficeChair.load('table.obj', function (object) {
+				objLoaderOfficeChair.load('table.obj', function(object) {
 					object.scale.set(260, 260, 260);
 					// <position object>
 					center3DModel(object);
 					camera.position.z = 600;
 
 					// tableObject = object;
-					object.traverse(function (child) {
+					object.traverse(function(child) {
 						if (child.material) {
 							console.log('chld', child.material);
 							if (texturePainting2) {
@@ -352,44 +352,28 @@ export class FurnitureComponent implements OnInit {
 
 		function modelSofa() {
 			const _textureLoader = new THREE.TextureLoader();
+			let objLoaderOfficeChair = new THREE.OBJLoader();
+			objLoaderOfficeChair.setPath('assets/models/Sofa_FBX/');
+			objLoaderOfficeChair.load('Sofa.obj', function(object) {
+				object.scale.set(260, 260, 260);
 
-			let mtlLoaderSofa = new THREE.MTLLoader();
-			mtlLoaderSofa.setBaseUrl('assets/models/Sofa_FBX/');
-			mtlLoaderSofa.setPath('assets/models/Sofa_FBX/');
-			mtlLoaderSofa.load('Sofa.mtl', function (materials) {
-				materials.preload();
-				console.log('materials', materials);
+				center3DModel(object);
+				camera.position.z = 600;
 
-				let objLoaderOfficeChair = new THREE.OBJLoader();
-				objLoaderOfficeChair.setMaterials(materials);
-				objLoaderOfficeChair.setPath('assets/models/Sofa_FBX/');
-				objLoaderOfficeChair.load('Sofa.obj', function (object) {
-					object.scale.set(260, 260, 260);
-
-					center3DModel(object);
-					camera.position.z = 600;
-
-					object.traverse(function (child) {
-						if (child.material) {
-							if (child instanceof THREE.Mesh) {
-								console.log('THREE.Mesh');
-								child.geometry.computeVertexNormals();
-							}
-							if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial) {
-								console.log('MeshPhongMaterial');
-								child.material.map = _textureLoader.load('assets/models/Sofa_FBX/Sofa_AlbedoTransparency.png');
-								child.material.aoMap = _textureLoader.load('assets/models/Sofa_FBX/Sofa_AO.png');
-								child.material.metalnessMap = _textureLoader.load('assets/models/Sofa_FBX/Sofa_MetallicSmoothness.png');
-								child.material.normalMap = _textureLoader.load('assets/models/Sofa_FBX/Sofa_Normal.png');
-							}
-							console.log('chld', child.material);
-							child.material.needsUpdate = true;
+				object.traverse(function(child) {
+					if (child.material) {
+						if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial) {							
+							child.material.map = _textureLoader.load('assets/models/Sofa_FBX/Sofa_AlbedoTransparency.png');
+							child.material.aoMap = _textureLoader.load('assets/models/Sofa_FBX/Sofa_AO.png');
+							child.material.metalnessMap = _textureLoader.load('assets/models/Sofa_FBX/Sofa_MetallicSmoothness.png');
+							child.material.normalMap = _textureLoader.load('assets/models/Sofa_FBX/Sofa_Normal.png');
 						}
-					});
-
-					object.updateMatrix();
-					scene.add(object);
+						child.material.needsUpdate = true;
+					}
 				});
+
+				object.updateMatrix();
+				scene.add(object);
 			});
 		}
 		this.functionModelSofa = modelSofa;
@@ -475,7 +459,7 @@ export class FurnitureComponent implements OnInit {
 
 		control();
 
-		let animate = function () {
+		let animate = function() {
 			requestAnimationFrame(animate);
 
 			if (color < 0xdddddd) color += 0x0000ff;
@@ -551,7 +535,7 @@ export class FurnitureComponent implements OnInit {
 			textureLoader.crossOrigin = "Anonymous";
 			let texturePainting = textureLoader.load(url);
 
-			this.tableObject.traverse(function (child) {
+			this.tableObject.traverse(function(child) {
 				if (child.material) {
 					if (child.material.name == "MeshPhongMaterial") {
 						if (texturePainting) {
