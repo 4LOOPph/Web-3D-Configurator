@@ -21,6 +21,7 @@ export class FurnitureComponent implements OnInit {
 	functionModelBed: any;
 	functionModelTest: any;
 	functionModelSofa: any;
+	functionModelBed_v1: any;
 
 	constructor() {
 
@@ -58,7 +59,7 @@ export class FurnitureComponent implements OnInit {
 
 		let scene = new THREE.Scene();
 		this.currentScene = scene;
-		let camera = new THREE.PerspectiveCamera(75, innerW / window.innerHeight, 0.1, 1000);
+		let camera = new THREE.PerspectiveCamera(75, innerW / window.innerHeight, 0.1, 2500);
 		camera.position.z = 250;
 		// camera.position.x = 400;
 		// camera.position.y = 150;
@@ -132,6 +133,13 @@ export class FurnitureComponent implements OnInit {
 				new THREE.PlaneGeometry(10, 10, 10, 10),
 				new THREE.MeshBasicMaterial({
 					map: modelSofa()
+				})
+			);
+		} else if (appModel === 'bed_v1') {
+			backgroundMesh = new THREE.Mesh(
+				new THREE.PlaneGeometry(10, 10, 10, 10),
+				new THREE.MeshBasicMaterial({
+					map: modelBed_v1()
 				})
 			);
 		} else {
@@ -340,6 +348,7 @@ export class FurnitureComponent implements OnInit {
 			});
 		};
 		this.tableObject = tableObject;
+		this.functionModelTest = modelNewTable;
 
 		function modelSofa() {
 			const _textureLoader = new THREE.TextureLoader();
@@ -385,7 +394,65 @@ export class FurnitureComponent implements OnInit {
 		}
 		this.functionModelSofa = modelSofa;
 
-		this.functionModelTest = modelNewTable;
+		function modelBed_v1() {
+			const _textureLoader = new THREE.TextureLoader();
+
+			let mtlLoaderSofa = new THREE.MTLLoader();
+			mtlLoaderSofa.setBaseUrl('assets/models/Bed_v1/');
+			mtlLoaderSofa.setPath('assets/models/Bed_v1/');
+			mtlLoaderSofa.load('Bed.mtl', function (materials) {
+				materials.preload();
+				console.log('materials', materials);
+
+				let objLoaderOfficeChair = new THREE.OBJLoader();
+				objLoaderOfficeChair.setMaterials(materials);
+				objLoaderOfficeChair.setPath('assets/models/Bed_v1/');
+				objLoaderOfficeChair.load('Bed.obj', function (object) {
+					object.scale.set(260, 260, 260);
+
+					center3DModel(object);
+					camera.position.z = 600;
+
+					object.traverse(function (child) {
+						if (child.material) {
+							if (child instanceof THREE.Mesh) {
+								console.log('THREE.Mesh');
+								child.geometry.computeVertexNormals();
+							}
+							if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial) {
+								console.log('MeshPhongMaterial');
+
+								if (child.material.name === "Base") {
+									child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Base_AlbedoTransparency.jpg');
+									child.material.aoMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_AO.jpg');
+									child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_MetallicSmoothness.png');
+									child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_Normal.jpg');
+								}
+
+								if (child.material.name === "Pillows") {
+									child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_AlbedoTransparency.jpg');
+									child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_MetallicSmoothness.png');
+									child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_Normal.jpg');
+								}
+
+								if (child.material.name === "Covers") {
+									child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_AlbedoTransparency.jpg');
+									child.material.aoMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_AO.jpg');
+									child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_MetallicSmoothness.png');
+									child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_Normal.jpg');
+								}
+							}
+							console.log('chld', child.material);
+							child.material.needsUpdate = true;
+						}
+					});
+
+					object.updateMatrix();
+					scene.add(object);
+				});
+			});
+		}
+		this.functionModelBed_v1 = modelBed_v1;
 
 		function onWindowResize() {
 			camera.aspect = innerW / window.innerHeight;
@@ -436,7 +503,7 @@ export class FurnitureComponent implements OnInit {
 
 	selectModel() {
 		localStorage.setItem('app.model', this.appModels);
-		this.showModel(this.appModels);
+		//this.showModel(this.appModels);
 		//location.reload();
 		console.log(this.appModels);
 		for (let i = 0; i < this.currentScene.children.length; i++) {
@@ -466,6 +533,9 @@ export class FurnitureComponent implements OnInit {
 				break;
 			case "sofa":
 				this.functionModelSofa();
+				break;
+			case "bed_v1":
+				this.functionModelBed_v1();
 				break;
 			default:
 
