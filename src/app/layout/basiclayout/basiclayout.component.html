@@ -1,21 +1,49 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
   <a class="navbar-brand" href="#">Navbar</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+    aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item" [ngClass]="{active: activeRoute('fbxsample')}">
-        <a class="nav-link" [routerLink]="['/fbxsample']">Creative's Models <span class="sr-only">(current)</span></a>
+        <a class="nav-link" [routerLink]="['/fbxsample']">Creative's Models
+          <span class="sr-only">(current)</span>
+        </a>
       </li>
       <li class="nav-item" [ngClass]="{active: activeRoute('furnitures')}">
-        <a class="nav-link" [routerLink]="['/furnitures']">Furnitures <span class="sr-only">(current)</span></a>
+        <a class="nav-link" [routerLink]="['/furnitures']">Furnitures
+          <span class="sr-only">(current)</span>
+        </a>
       </li>
       <li class="nav-item" [ngClass]="{active: activeRoute('cars')}">
         <a class="nav-link" [routerLink]="['/cars']">Cars</a>
       </li>
       <li class="nav-item" [ngClass]="{active: activeRoute('furniture2')}">
-        <a class="nav-link" [routerLink]="['/furniture2']">Avatar <span class="sr-only">(current)</span></a>
+        <a class="nav-link" [routerLink]="['/furniture2']">Avatar
+          <span class="sr-only">(current)</span>
+        </a>
+      </li>
+      <li class="nav-item" [ngClass]="{active: activeRoute('test')}">
+        <a class="nav-link" [routerLink]="['/test']">FBX Loader
+          <span class="sr-only">(current)</span>
+        </a>
+      </li>
+      <!-- <li class="nav-item">
+        <a class="nav-link">Interior Design
+          <span class="sr-only">(current)</span>
+        </a>
+      </li> -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          Interior Design
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/interior1']">Design 1</a>
+          <a class="dropdown-item">Design 2</a>
+          <a class="dropdown-item">Design 3</a>
+        </div>
       </li>
     </ul>
   </div>

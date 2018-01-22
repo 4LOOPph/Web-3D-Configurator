@@ -13,6 +13,7 @@ import { BasiclayoutComponent } from './layout/basiclayout/basiclayout.component
 import { Furniture2Component } from './furniture2/furniture2.component';
 import { FbxsampleComponent } from './fbxsample/fbxsample.component';
 import { TestComponent } from './test/test.component';
+import { Interior1Component } from './interior1/interior1.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { TestComponent } from './test/test.component';
     BasiclayoutComponent,
     Furniture2Component,
     FbxsampleComponent,
-    TestComponent
+    TestComponent,
+    Interior1Component
   ],
   imports: [
     BrowserModule,

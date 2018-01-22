@@ -1,3 +1,18 @@
-<p>
-  test works!
-</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group">
+        <div class="col-md-12 mb-3">
+          <select class="form-control" id="inputGroupSelect01" [(ngModel)]="appModels" (change)="selectModel()">
+            <option selected value="">Select Model</option>
+            <option value="sofa">Sofa</option>
+            <option value="bed_v1">bedV1</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-9" id="rendererDiv">
+      <div id="renderHere"></div>
+    </div>
+  </div>
+</div>
