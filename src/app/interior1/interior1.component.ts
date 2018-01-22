@@ -109,13 +109,22 @@ export class Interior1Component implements OnInit {
               // console.log('chld', child);
               // console.log('chld', child.material);
               if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial) {
+                // Floor
                 if (child.name === 'Plane001'){
                   var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
                   var texture = _textureLoader.load("assets/models/house/floor_uv_texture.jpg");
                   material.map = texture;
                   child.material = material;
                 }
+                // 2nd Floor
+                if (child.name === 'Plane002') {
+                  var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                  var texture = _textureLoader.load("assets/models/house/wall.jpg");
+                  material.map = texture;
+                  child.material = material;
+                }
 
+                // Wall
                 if (child.name === 'Plane003') {
                   var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
                   var texture = _textureLoader.load("assets/models/house/wall texture.jpg");
@@ -123,6 +132,7 @@ export class Interior1Component implements OnInit {
                   child.material = material;
                 }
 
+                // Wall Edge
                 if (child.name === 'Box037') {
                   var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
                   var texture = _textureLoader.load("assets/models/house/wall edge.jpg");
@@ -130,6 +140,7 @@ export class Interior1Component implements OnInit {
                   child.material = material;
                 }
 
+                // Painting 1
                 if (child.name === 'Box038') {
                   var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
                   var texture = _textureLoader.load("assets/models/house/IN UV PAINTING TEXTURE.jpg");
@@ -137,6 +148,7 @@ export class Interior1Component implements OnInit {
                   child.material = material;
                 }
 
+                // Painting 2
                 if (child.name === 'Box043') {
                   var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
                   var texture = _textureLoader.load("assets/models/house/IN UV PAINTING texture 2.jpg");
@@ -144,9 +156,19 @@ export class Interior1Component implements OnInit {
                   child.material = material;
                 }
 
+                // Painting 3
                 if (child.name === 'Box044') {
                   var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
                   var texture = _textureLoader.load("assets/models/house/IN UV PAINTING texture 3.jpg");
+                  material.map = texture;
+                  child.material = material;
+                }
+
+                // Stairs Steps
+                if (child.name === 'Box013' || child.name === 'Box012' || child.name === 'Box011' || child.name === 'Box010' || child.name === 'Box009' || child.name === 'Box008' ||
+                  child.name === 'Box007' || child.name === 'Box006' || child.name === 'Box005' || child.name === 'Box004' || child.name === 'Box003') {
+                  var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                  var texture = _textureLoader.load("assets/models/house/stairs.jpg");
                   material.map = texture;
                   child.material = material;
                 }
@@ -181,11 +203,28 @@ export class Interior1Component implements OnInit {
                   child.material = material;
                 }
 
+                if (child.name === 'Box019' || child.name === 'Box023' || child.name === 'Box021' || child.name === 'Box024' || child.name === 'Box025' || child.name === 'Box026') {
+                  var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                  material.map = _textureLoader.load('assets/models/house/fabricdenim/FabricDenim003_COL_VAR1_3K.jpg');
+                  material.metalnessMap = _textureLoader.load('assets/models/house/fabricdenim/FabricDenim003_COL_VAR2_3K.jpg');
+                  material.normalMap = _textureLoader.load('assets/models/house/FabricDenim003_NRM_3K.jpg');
+                  child.material = material;
+                }
+
+
                 // 2 Small Sofa
                 if (child.material.name === 'sopha_wood_texture') {
                   var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
                   var texture = _textureLoader.load("assets/models/house/sopha wood uv texture.jpg");
                   material.map = texture;
+                  child.material = material;
+                }
+
+                if (child.name === 'Box029' || child.name === 'Box027') {
+                  var material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                  material.map = _textureLoader.load('assets/models/house/fabricdenim/FabricDenim003_COL_VAR1_3K.jpg');
+                  material.metalnessMap = _textureLoader.load('assets/models/house/fabricdenim/FabricDenim003_COL_VAR2_3K.jpg');
+                  material.normalMap = _textureLoader.load('assets/models/house/FabricDenim003_NRM_3K.jpg');
                   child.material = material;
                 }
               }

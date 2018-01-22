@@ -10,16 +10,6 @@ declare let Detector: any;
 })
 export class TestComponent implements OnInit {
 
-	title = 'app';
-	appModels: any = "";
-	currentObject: any;
-	currentScene: any;
-
-	tableObject: any;
-
-	functionModelSofa: any;
-	functionModelBed_v1: any;
-
 
 	constructor() { }
 
@@ -30,259 +20,105 @@ export class TestComponent implements OnInit {
 	}
 
 	initGUI() {
-		let color = 0x000000;
-		let backgroundMesh: any;
-		let texturePainting: any;
-		let texturePainting2: any;
-		let texturePainting_Table: any;
-		let _mesh: any;
+		if (!Detector.webgl) Detector.addGetWebGLMessage();
 
-		let tableObject = this;
+		let camera, scene, renderer, light, controls;
+		let clock = new THREE.Clock();
+		let mixers = [];
 
 		let innerW = document.getElementById('rendererDiv').offsetWidth;
 		let innerH = document.getElementById('rendererDiv').offsetHeight;
-		let appModel = localStorage.getItem('app.model');
-		let appTextureTop = localStorage.getItem('app.texture.top');
-		let appTextureLegs = localStorage.getItem('app.texture.legs');
 
-		if (appModel) {
-			this.appModels = appModel;
-		}
+		init();
 
-		let camera, controls, scene, renderer;
-		let lighting, ambient, keyLight, fillLight, backLight;
-		let windowHalfX = window.innerWidth / 2;
-		let windowHalfY = window.innerHeight / 2;
+		function init() {
+			camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
 
-		/* Camera */
-		camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-		camera.position.z = 3;
-		camera.lookAt(new THREE.Vector3(0, 0, 0));
+			scene = new THREE.Scene();
 
-		/* Scene */
-		scene = new THREE.Scene();
-		this.currentScene = scene;
-		lighting = false;
+			// grid
+			let gridHelper = new THREE.GridHelper(28, 28, 0x303030, 0x303030);
+			gridHelper.position.set(0, - 0.04, 0);
+			scene.add(gridHelper);
 
-		ambient = new THREE.AmbientLight(0xffffff, 1.0);
-		scene.add(ambient);
+			// model
+			let manager = new THREE.LoadingManager();
+			manager.onProgress = function (item, loaded, total) {
+				console.log('onProgress: ', item, loaded, total);
+			};
 
-		keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(30, 100%, 75%)'), 1.0);
-		keyLight.position.set(-100, 0, 100);
+			let onProgress = function (xhr) {
+				if (xhr.lengthComputable) {
+					let percentComplete = xhr.loaded / xhr.total * 100;
+					console.log('onProgress: ',Math.round(percentComplete) + '% downloaded');
+				}
+			};
 
-		fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(240, 100%, 75%)'), 0.75);
-		fillLight.position.set(100, 0, 100);
+			let onError = function (xhr) {
+				console.error('onError: ',xhr);
+			};
 
-		backLight = new THREE.DirectionalLight(0xffffff, 1.0);
-		backLight.position.set(100, 0, -100).normalize();
-
-		scene.add(keyLight);
-		scene.add(fillLight);
-		scene.add(backLight);
-
-
-		renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-		renderer.setSize(innerW, window.innerHeight);
-		document.getElementById('renderHere').style.cssText = 'margin-right: 50px; border: 1px solid black;';
-		document.getElementById('renderHere').appendChild(renderer.domElement);
-
-		if (appModel === 'sofa') {
-			modelSofa()
-		} else if (appModel === 'bed_v1') {
-			modelBed_v1()
-		}
-
-		window.addEventListener('resize', onWindowResize, false);
-
-		function modelSofa() {
-			const _textureLoader = new THREE.TextureLoader();
-			let objLoaderOfficeChair = new THREE.OBJLoader();
-			objLoaderOfficeChair.setPath('assets/models/Sofa_FBX/');
-			objLoaderOfficeChair.load('Sofa.obj', function(object) {
-				object.scale.set(200, 200, 200);
-				center3DModel(object);
-				camera.position.z = 600;
-				object.traverse(function(child) {
-					if (child.material) {
-						if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial) {
-							console.log('MeshPhongMaterial');
-							child.material.map = _textureLoader.load('assets/models/Sofa_FBX/Sofa_AlbedoTransparency.png');
-							child.material.aoMap = _textureLoader.load('assets/models/Sofa_FBX/Sofa_AO.png');
-							child.material.metalnessMap = _textureLoader.load('assets/models/Sofa_FBX/Sofa_MetallicSmoothness.png');
-							child.material.normalMap = _textureLoader.load('assets/models/Sofa_FBX/Sofa_Normal.png');
-						}
-						console.log('chld', child.material);
-						child.material.needsUpdate = true;
-					}
-				});
-
-				object.updateMatrix();
+			let loader = new THREE.FBXLoader(manager);
+			loader.load('assets/models/Musa_Chair_FBX/Musa_Chair.FBX', function (object) {
+				object.mixer = new THREE.AnimationMixer(object);
+				mixers.push(object.mixer);
+				object.material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+				let action = object.mixer.clipAction(object.animations[0]);
+				action.play();
 				scene.add(object);
-			});
+			}, onProgress, onError);
+
+			/* loader.load('models/fbx/nurbs.fbx', function (object) {
+				scene.add(object);
+			}, onProgress, onError); */
+
+			renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+			renderer.setPixelRatio(window.devicePixelRatio);
+			renderer.setSize(innerW, window.innerHeight);
+			document.getElementById('renderHere').style.cssText = 'margin-right: 50px; border: 1px solid black;';
+			document.getElementById('renderHere').appendChild(renderer.domElement);
+
+			// controls, camera
+			controls = new THREE.OrbitControls(camera, renderer.domElement);
+			controls.target.set(0, 12, 0);
+			camera.position.set(2, 18, 28);
+			controls.update();
+
+			window.addEventListener('resize', onWindowResize, false);
+
+			light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0);
+			light.position.set(0, 1, 0);
+			scene.add(light);
+
+			light = new THREE.DirectionalLight(0xffffff, 1.0);
+			light.position.set(0, 1, 0);
+			scene.add(light);
+
+			animate();
+
 		}
-		this.functionModelSofa = modelSofa;
-
-		function modelBed_v1() {
-			const _textureLoader = new THREE.TextureLoader();
-
-			let mtlLoaderSofa = new THREE.MTLLoader();
-			mtlLoaderSofa.setBaseUrl('assets/models/Bed_v1/');
-			mtlLoaderSofa.setPath('assets/models/Bed_v1/');
-			mtlLoaderSofa.load('Bed.mtl', function(materials) {
-				materials.preload();
-				console.log('materials', materials);
-
-				let objLoaderOfficeChair = new THREE.OBJLoader();
-				objLoaderOfficeChair.setMaterials(materials);
-				objLoaderOfficeChair.setPath('assets/models/Bed_v1/');
-				objLoaderOfficeChair.load('Bed.obj', function(object) {
-					object.scale.set(260, 260, 260);
-
-					center3DModel(object);
-					camera.position.z = 600;
-
-					object.traverse(function(child) {
-						if (child.material) {
-							if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial) {
-								console.log('MeshPhongMaterial');
-
-								if (child.material.name === "Base") {
-									child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Base_AlbedoTransparency.jpg');
-									child.material.aoMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_AO.jpg');
-									child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_MetallicSmoothness.png');
-									child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Base_Normal.jpg');
-								}
-
-								if (child.material.name === "Pillows") {
-									child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_AlbedoTransparency.jpg');
-									child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_MetallicSmoothness.png');
-									child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Pillows_Normal.jpg');
-								}
-
-								if (child.material.name === "Covers") {
-									child.material.map = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_AlbedoTransparency.jpg');
-									child.material.aoMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_AO.jpg');
-									child.material.metalnessMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_MetallicSmoothness.png');
-									child.material.normalMap = _textureLoader.load('assets/models/Bed_v1/Bed_Covers_Normal.jpg');
-								}
-							}
-							console.log('chld', child.material);
-							child.material.needsUpdate = true;
-						}
-					});
-
-					object.updateMatrix();
-					scene.add(object);
-				});
-			});
-		}
-		this.functionModelBed_v1 = modelBed_v1;
-
 
 		function onWindowResize() {
-			camera.aspect = innerW / window.innerHeight;
+			camera.aspect = window.innerWidth / window.innerHeight;
 			camera.updateProjectionMatrix();
-			renderer.setSize(innerW, window.innerHeight);
+
+			renderer.setSize(window.innerWidth, window.innerHeight);
 		}
 
-		function control() {
-			controls = new THREE.OrbitControls(camera, renderer.domElement);
-			controls.enableDamping = true;
-			controls.dampingFactor = 0.25;
-			controls.enableZoom = true;
-
-			controls.minDistance = 0;
-			//controls.maxDistance = 3;
-			controls.minPolarAngle = 0; // radians
-			controls.maxPolarAngle = Math.PI; // radians
-			controls.maxPolarAngle = Math.PI / 2;
-		};
-
-		control();
-
-		let animate = function() {
+		//
+		function animate() {
 			requestAnimationFrame(animate);
-
-			// renderer.setClearColorHex(0xffffff, 1);
-			renderer.autoClear = false;
-			renderer.clear();
-
-			if (appModel) {
-				// renderer.render(backgroundScene, backgroundCamera);
-			}
-			camera.lookAt(scene.position);
-			renderer.render(scene, camera);
-		};
-
-		animate();
-
-		function center3DModel(object) {
-			var thsOBJ = new THREE.Box3().setFromObject(object);
-			var valX = (thsOBJ.getSize().x);
-			var valY = (thsOBJ.getSize().y);
-			var valZ = (thsOBJ.getSize().z);
-
-			return object.position.set(((thsOBJ.getCenter().x) * -1), (valY * -1) / 2, ((thsOBJ.getCenter().z) * -1));
-		}
-	}
-
-	selectModel() {
-		localStorage.setItem('app.model', this.appModels);
-		//this.showModel(this.appModels);
-		//location.reload();
-		console.log(this.appModels);
-		for (let i = 0; i < this.currentScene.children.length; i++) {
-			let child = this.currentScene.children[i];
-			console.log(child);
-			if (child.type === 'Group') {
-				this.currentScene.remove(child);
-				this.showModel(this.appModels);
-				break;
-			}
-		}
-	}
-
-	showModel(model) {
-		switch (model) {
-			case "sofa":
-				this.functionModelSofa();
-				break;
-			case "bed_v1":
-				this.functionModelBed_v1();
-				break;
-			default:
-
-				break;
-		}
-	}
-
-	setTextureTop(texture) {
-		if (texture == "tableture") {
-			let url: string = "assets/models/Table/Gio_Normal.jpn";
-			console.log(this.tableObject);
-			const textureLoader = new THREE.TextureLoader();
-			textureLoader.crossOrigin = "Anonymous";
-			let texturePainting = textureLoader.load(url);
-
-			this.tableObject.traverse(function(child) {
-				if (child.material) {
-					if (child.material.name == "MeshPhongMaterial") {
-						if (texturePainting) {
-							child.material.map = texturePainting;
-							child.material.needsUpdate = true;
-						}
-					}
+			if (mixers.length > 0) {
+				for (let i = 0; i < mixers.length; i++) {
+					mixers[i].update(clock.getDelta());
 				}
-			});
-		} else {
-			localStorage.setItem('app.texture.top', texture);
-			location.reload()
+			}
+			render();
 		}
-	}
 
-	setTextureLegs(texture) {
-		localStorage.setItem('app.texture.legs', texture);
-		location.reload()
+		function render() {
+			renderer.render(scene, camera);
+		}
 	}
 
 }
