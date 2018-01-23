@@ -118,7 +118,6 @@ export class FbxsampleComponent implements OnInit {
     outlinePass.hiddenEdgeColor.set('#190a05');
 
 
-
     if (appModel === 'sofa') {
       modelSofa();
     } else if (appModel === 'bed_v1') {
