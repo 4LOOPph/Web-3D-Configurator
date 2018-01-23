@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,NgZone } from '@angular/core';
 
 
 declare let THREE: any;
@@ -16,14 +16,14 @@ export class FbxsampleComponent implements OnInit {
   currentObject: any;
   currentScene: any;
   currentCamera: any;
-  perspective: any;
+  perspective: any = 'PerspectiveCamera';
   tableObject: any;
 
   functionModelSofa: any;
   functionModelBed_v1: any;
 
 
-  constructor() { }
+  constructor(public zone:NgZone) { }
 
   ngOnInit() {
     if (!Detector.webgl) Detector.addGetWebGLMessage();
@@ -35,9 +35,11 @@ export class FbxsampleComponent implements OnInit {
     let color = 0x000000;
     let backgroundMesh: any;
     let _mesh: any;
-
-    let rotSpeed = .01, radius = 100, theta = 0, INTERSECTED;
-    let tableObject = this;
+    let mouse = new THREE.Vector2();
+    let rotSpeed = .01;
+    let ctrl = this;
+    let composer, effectFXAA, outlinePass, INTERSECTED;
+    let selectedObjects = [];
 
     let innerW = document.getElementById('rendererDiv').offsetWidth;
     let innerH = document.getElementById('rendererDiv').offsetHeight;
@@ -60,6 +62,7 @@ export class FbxsampleComponent implements OnInit {
     camera.position.set(0, 100, 3);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     this.currentCamera = camera;
+    console.log('this.currentCamera', this.currentCamera);
 
     /* Scene */
     scene = new THREE.Scene();
@@ -83,12 +86,37 @@ export class FbxsampleComponent implements OnInit {
     scene.add(backLight);
 
 
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    // renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(innerW, window.innerHeight);
     document.getElementById('renderHere').style.cssText = 'margin-right: 50px; border: 1px solid black;';
     document.getElementById('renderHere').appendChild(renderer.domElement);
 
     raycaster = new THREE.Raycaster();
+
+    // postprocessing
+    composer = new THREE.EffectComposer(renderer);
+
+    var renderPass = new THREE.RenderPass(scene, camera);
+    composer.addPass(renderPass);
+
+    outlinePass = new THREE.OutlinePass(new THREE.Vector2(innerW, window.innerHeight), scene, camera);
+    composer.addPass(outlinePass);
+
+    effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
+    effectFXAA.uniforms['resolution'].value.set(1 / innerW, 1 / window.innerHeight);
+    effectFXAA.renderToScreen = true;
+    composer.addPass(effectFXAA);
+
+
+    outlinePass.edgeStrength = 10;
+    outlinePass.edgeGlow = 0.0;
+    outlinePass.edgeThickness = 2;
+    outlinePass.pulsePeriod = 0;
+    outlinePass.usePatternTexture = false;
+    outlinePass.visibleEdgeColor.set('#ffffff');
+    outlinePass.hiddenEdgeColor.set('#190a05');
+
 
 
     if (appModel === 'sofa') {
@@ -100,24 +128,35 @@ export class FbxsampleComponent implements OnInit {
     }
 
     setTimeout(() => {
-      cameraCinematics();
+      if (ctrl.currentCamera instanceof THREE.PerspectiveCamera) {
+        ctrl.perspective = "CinematicCamera";
+      } else {
+        ctrl.perspective = "PerspectiveCamera";
+      }
     }, 3000);
 
-    window.addEventListener('resize', onWindowResize, false);
+
+    window.addEventListener('resize', onWindowResize);
+    window.addEventListener('mousemove', onTouchMove);
+    window.addEventListener('touchmove', onTouchMove);
+    window.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('mouseup', onMouseUp);
+
 
     function modelSofa() {
       const _textureLoader = new THREE.TextureLoader();
+      var outlineMaterial2 = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.BackSide });
+
       let objLoaderOfficeChair = new THREE.OBJLoader();
       objLoaderOfficeChair.setPath('assets/models/Sofa_FBX/');
       objLoaderOfficeChair.load('Sofa.obj', function (object) {
         object.scale.set(200, 200, 200);
         center3DModel(object);
         camera.position.z = 600;
+
+        var scale = 1.0;
         object.traverse(function (child) {
           if (child.material) {
-            if (child instanceof THREE.Mesh) {
-              console.log('THREE.Mesh');
-            }
             if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshPhongMaterial) {
               console.log('MeshPhongMaterial');
               child.material.map = _textureLoader.load('assets/models/Sofa_FBX/Sofa_AlbedoTransparency.png');
@@ -187,7 +226,52 @@ export class FbxsampleComponent implements OnInit {
     function onWindowResize() {
       camera.aspect = innerW / window.innerHeight;
       camera.updateProjectionMatrix();
+
       renderer.setSize(innerW, window.innerHeight);
+      composer.setSize(innerW, window.innerHeight);
+
+      effectFXAA.uniforms['resolution'].value.set(1 / innerW, 1 / window.innerHeight);
+    }
+
+    function onTouchMove(event) {
+      // console.log('onTouchMove: ', event.changedTouches)
+      var x, y;
+      if (event.changedTouches) {
+        x = event.changedTouches[0].pageX;
+        y = event.changedTouches[0].pageY;
+      } else {
+        x = event.clientX;
+        y = event.clientY;
+      }
+      mouse.x = (x / window.innerWidth) * 2 - 1;
+      mouse.y = - (y / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, ctrl.currentCamera);
+      var intersects = raycaster.intersectObjects([scene], true);
+      if (intersects.length > 0) {
+        var selectedObject = intersects[0].object;
+        addSelectedObject(selectedObject);
+        outlinePass.selectedObjects = selectedObjects;
+      } else {
+        outlinePass.selectedObjects = [];
+      }
+    }
+
+    function onMouseDown(event){
+      if(event){
+        ctrl.perspective = "PerspectiveCamera";
+      }
+    }
+
+    function onMouseUp(event){
+      if (event) {
+        ctrl.perspective = "CinematicCamera";
+      }
+    }
+
+    function addSelectedObject(object) {
+      selectedObjects = [];
+      selectedObjects.push(object);
     }
 
     function control() {
@@ -205,39 +289,35 @@ export class FbxsampleComponent implements OnInit {
 
     control();
 
-    let animate = function () {
+    function animate() {
       requestAnimationFrame(animate);
 
-      var x = camera.position.x,
-        y = camera.position.y,
-        z = camera.position.z;
-
-      // RIGHT TO LEFT
-      camera.position.x = x * Math.cos(rotSpeed) + z * Math.sin(rotSpeed);
-      // camera.position.y = y * Math.cos(rotSpeed) + z * Math.sin(rotSpeed); // Enable this will rotate the object below
-      camera.position.z = z * Math.cos(rotSpeed) - x * Math.sin(rotSpeed);
-
-      // LEFT TO RIGHT
-      /* camera.position.x = x * Math.cos(rotSpeed) - z * Math.sin(rotSpeed);
-      camera.position.z = z * Math.cos(rotSpeed) + x * Math.sin(rotSpeed); */
-
-      camera.lookAt(scene.position);
-      camera.updateMatrixWorld();
+      var x = ctrl.currentCamera.position.x,
+        y = ctrl.currentCamera.position.y,
+        z = ctrl.currentCamera.position.z;
 
 
-      if (camera instanceof THREE.PerspectiveCamera) {
-        camera.lookAt(scene.position);
-        renderer.render(scene, camera);
-      } else {
-        if (camera.postprocessing.enabled) {
-          //rendering Cinematic Camera effects
-          camera.renderCinematic(scene, renderer);
-        } else {
-          scene.overrideMaterial = null;
-          renderer.clear();
-          renderer.render(scene, camera);
-        }
+      if (ctrl.perspective === 'PerspectiveCamera') {
+        ctrl.currentCamera.lookAt(scene.position);
+        renderer.render(scene, ctrl.currentCamera);
+      } else{
+        // RIGHT TO LEFT
+        // ctrl.currentCamera.position.y = y * Math.cos(rotSpeed) + z * Math.sin(rotSpeed); // Enable this will rotate the object below
+        ctrl.currentCamera.position.x = x * Math.cos(rotSpeed) + z * Math.sin(rotSpeed);
+        ctrl.currentCamera.position.z = z * Math.cos(rotSpeed) - x * Math.sin(rotSpeed);
+
+        // LEFT TO RIGHT
+        /* ctrl.currentCamera.position.x = x * Math.cos(rotSpeed) - z * Math.sin(rotSpeed);
+        ctrl.currentCamera.position.z = z * Math.cos(rotSpeed) + x * Math.sin(rotSpeed); */
+
+        ctrl.currentCamera.lookAt(scene.position);
+        ctrl.currentCamera.updateMatrixWorld();
+
+        renderer.clear();
+        renderer.render(scene, ctrl.currentCamera);
       }
+
+      composer.render();
     };
 
     animate();
@@ -249,28 +329,6 @@ export class FbxsampleComponent implements OnInit {
       var valZ = (thsOBJ.getSize().z);
 
       return object.position.set(((thsOBJ.getCenter().x) * -1), (valY * -1) / 2, ((thsOBJ.getCenter().z) * -1));
-    }
-
-
-    function cameraCinematics() {
-      if (camera instanceof THREE.PerspectiveCamera) {
-        console.log('OrthographicCamera: ')
-        camera = new THREE.CinematicCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
-        camera.setLens(5);
-        // camera.position.set(0, 100, 3);
-        camera.position.set(2, 1, 500);
-        camera.lookAt(scene.position);
-        tableObject.perspective = "CinematicCamera";
-      } else {
-        console.log('Perspectivethis: ')
-        camera = new THREE.Perspectivecamera(45,
-          window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.x = 120;
-        camera.position.y = 60;
-        camera.position.z = 180;
-        camera.lookAt(scene.position);
-        tableObject.perspective = "Perspective";
-      }
     }
   }
 
@@ -302,27 +360,8 @@ export class FbxsampleComponent implements OnInit {
   }
 
   setTextureTop(texture) {
-    if (texture == "tableture") {
-      let url: string = "assets/models/Table/Gio_Normal.jpn";
-      console.log(this.tableObject);
-      const textureLoader = new THREE.TextureLoader();
-      textureLoader.crossOrigin = "Anonymous";
-      let texturePainting = textureLoader.load(url);
-
-      this.tableObject.traverse(function (child) {
-        if (child.material) {
-          if (child.material.name == "MeshPhongMaterial") {
-            if (texturePainting) {
-              child.material.map = texturePainting;
-              child.material.needsUpdate = true;
-            }
-          }
-        }
-      });
-    } else {
-      localStorage.setItem('app.texture.top', texture);
-      location.reload()
-    }
+    localStorage.setItem('app.texture.top', texture);
+    location.reload();
   }
 
   setTextureLegs(texture) {

@@ -32,6 +32,13 @@
         "../node_modules/three/examples/js/controls/OrbitControls.js",
         "../node_modules/three/examples/js/controls/DragControls.js",
         "../node_modules/three/examples/js/cameras/CinematicCamera.js",
+        "../node_modules/three/examples/js/postprocessing/EffectComposer.js",
+        "../node_modules/three/examples/js/postprocessing/RenderPass.js",
+        "../node_modules/three/examples/js/postprocessing/ShaderPass.js",
+        "../node_modules/three/examples/js/postprocessing/OutlinePass.js",
+        "../node_modules/three/examples/js/shaders/CopyShader.js",
+        "../node_modules/three/examples/js/shaders/FXAAShader.js",
+        "../node_modules/three/examples/js/shaders/BokehShader2.js",
         "../node_modules/popper.js/dist/umd/popper.min.js",
         "../node_modules/bootstrap/dist/js/bootstrap.min.js"
       ],
