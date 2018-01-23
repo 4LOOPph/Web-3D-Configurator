@@ -31,6 +31,7 @@
         "../node_modules/three/examples/js/loaders/FBXLoader.js",
         "../node_modules/three/examples/js/controls/OrbitControls.js",
         "../node_modules/three/examples/js/controls/DragControls.js",
+        "../node_modules/three/examples/js/cameras/CinematicCamera.js",
         "../node_modules/popper.js/dist/umd/popper.min.js",
         "../node_modules/bootstrap/dist/js/bootstrap.min.js"
       ],

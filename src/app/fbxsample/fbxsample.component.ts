@@ -15,7 +15,8 @@ export class FbxsampleComponent implements OnInit {
   appModels: any = "";
   currentObject: any;
   currentScene: any;
-
+  currentCamera: any;
+  perspective: any;
   tableObject: any;
 
   functionModelSofa: any;
@@ -33,11 +34,9 @@ export class FbxsampleComponent implements OnInit {
   initGUI() {
     let color = 0x000000;
     let backgroundMesh: any;
-    let texturePainting: any;
-    let texturePainting2: any;
-    let texturePainting_Table: any;
     let _mesh: any;
 
+    let rotSpeed = .01, radius = 100, theta = 0, INTERSECTED;
     let tableObject = this;
 
     let innerW = document.getElementById('rendererDiv').offsetWidth;
@@ -50,15 +49,17 @@ export class FbxsampleComponent implements OnInit {
       this.appModels = appModel;
     }
 
-    let camera, controls, scene, renderer;
+    let camera, controls, scene, renderer, raycaster;
     let lighting, ambient, keyLight, fillLight, backLight;
     let windowHalfX = window.innerWidth / 2;
     let windowHalfY = window.innerHeight / 2;
 
     /* Camera */
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.z = 3;
+    // camera.position.z = 3;
+    camera.position.set(0, 100, 3);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
+    this.currentCamera = camera;
 
     /* Scene */
     scene = new THREE.Scene();
@@ -87,11 +88,20 @@ export class FbxsampleComponent implements OnInit {
     document.getElementById('renderHere').style.cssText = 'margin-right: 50px; border: 1px solid black;';
     document.getElementById('renderHere').appendChild(renderer.domElement);
 
+    raycaster = new THREE.Raycaster();
+
+
     if (appModel === 'sofa') {
-      modelSofa()
+      modelSofa();
     } else if (appModel === 'bed_v1') {
-      modelBed_v1()
+      modelBed_v1();
+    } else {
+      modelSofa();
     }
+
+    setTimeout(() => {
+      cameraCinematics();
+    }, 3000);
 
     window.addEventListener('resize', onWindowResize, false);
 
@@ -99,11 +109,11 @@ export class FbxsampleComponent implements OnInit {
       const _textureLoader = new THREE.TextureLoader();
       let objLoaderOfficeChair = new THREE.OBJLoader();
       objLoaderOfficeChair.setPath('assets/models/Sofa_FBX/');
-      objLoaderOfficeChair.load('Sofa.obj', function(object) {
+      objLoaderOfficeChair.load('Sofa.obj', function (object) {
         object.scale.set(200, 200, 200);
         center3DModel(object);
         camera.position.z = 600;
-        object.traverse(function(child) {
+        object.traverse(function (child) {
           if (child.material) {
             if (child instanceof THREE.Mesh) {
               console.log('THREE.Mesh');
@@ -195,18 +205,39 @@ export class FbxsampleComponent implements OnInit {
 
     control();
 
-    let animate = function() {
+    let animate = function () {
       requestAnimationFrame(animate);
 
-      // renderer.setClearColorHex(0xffffff, 1);
-      renderer.autoClear = false;
-      renderer.clear();
+      var x = camera.position.x,
+        y = camera.position.y,
+        z = camera.position.z;
 
-      if (appModel) {
-        // renderer.render(backgroundScene, backgroundCamera);
-      }
+      // RIGHT TO LEFT
+      camera.position.x = x * Math.cos(rotSpeed) + z * Math.sin(rotSpeed);
+      // camera.position.y = y * Math.cos(rotSpeed) + z * Math.sin(rotSpeed); // Enable this will rotate the object below
+      camera.position.z = z * Math.cos(rotSpeed) - x * Math.sin(rotSpeed);
+
+      // LEFT TO RIGHT
+      /* camera.position.x = x * Math.cos(rotSpeed) - z * Math.sin(rotSpeed);
+      camera.position.z = z * Math.cos(rotSpeed) + x * Math.sin(rotSpeed); */
+
       camera.lookAt(scene.position);
-      renderer.render(scene, camera);
+      camera.updateMatrixWorld();
+
+
+      if (camera instanceof THREE.PerspectiveCamera) {
+        camera.lookAt(scene.position);
+        renderer.render(scene, camera);
+      } else {
+        if (camera.postprocessing.enabled) {
+          //rendering Cinematic Camera effects
+          camera.renderCinematic(scene, renderer);
+        } else {
+          scene.overrideMaterial = null;
+          renderer.clear();
+          renderer.render(scene, camera);
+        }
+      }
     };
 
     animate();
@@ -219,13 +250,32 @@ export class FbxsampleComponent implements OnInit {
 
       return object.position.set(((thsOBJ.getCenter().x) * -1), (valY * -1) / 2, ((thsOBJ.getCenter().z) * -1));
     }
+
+
+    function cameraCinematics() {
+      if (camera instanceof THREE.PerspectiveCamera) {
+        console.log('OrthographicCamera: ')
+        camera = new THREE.CinematicCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+        camera.setLens(5);
+        // camera.position.set(0, 100, 3);
+        camera.position.set(2, 1, 500);
+        camera.lookAt(scene.position);
+        tableObject.perspective = "CinematicCamera";
+      } else {
+        console.log('Perspectivethis: ')
+        camera = new THREE.Perspectivecamera(45,
+          window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.x = 120;
+        camera.position.y = 60;
+        camera.position.z = 180;
+        camera.lookAt(scene.position);
+        tableObject.perspective = "Perspective";
+      }
+    }
   }
 
   selectModel() {
     localStorage.setItem('app.model', this.appModels);
-    //this.showModel(this.appModels);
-    //location.reload();
-    console.log(this.appModels);
     for (let i = 0; i < this.currentScene.children.length; i++) {
       let child = this.currentScene.children[i];
       console.log(child);
@@ -246,7 +296,7 @@ export class FbxsampleComponent implements OnInit {
         this.functionModelBed_v1();
         break;
       default:
-
+        this.functionModelSofa();
         break;
     }
   }
@@ -259,7 +309,7 @@ export class FbxsampleComponent implements OnInit {
       textureLoader.crossOrigin = "Anonymous";
       let texturePainting = textureLoader.load(url);
 
-      this.tableObject.traverse(function(child) {
+      this.tableObject.traverse(function (child) {
         if (child.material) {
           if (child.material.name == "MeshPhongMaterial") {
             if (texturePainting) {
