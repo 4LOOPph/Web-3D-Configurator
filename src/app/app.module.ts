@@ -16,6 +16,7 @@ import { FbxsampleComponent } from './fbxsample/fbxsample.component';
 import { TestComponent } from './test/test.component';
 import { Interior1Component } from './interior1/interior1.component';
 import { Blueprint3dComponent } from './blueprint3d/blueprint3d.component';
+import { CameraCinematicsComponent } from './camera-cinematics/camera-cinematics.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { Blueprint3dComponent } from './blueprint3d/blueprint3d.component';
     FbxsampleComponent,
     TestComponent,
     Interior1Component,
-    Blueprint3dComponent
+    Blueprint3dComponent,
+    CameraCinematicsComponent
   ],
   imports: [
     BrowserModule,
