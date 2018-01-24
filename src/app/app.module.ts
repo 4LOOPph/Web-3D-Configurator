@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ROUTES } from './app.routes';
 
@@ -32,7 +33,8 @@ import { Blueprint3dComponent } from './blueprint3d/blueprint3d.component';
   imports: [
     BrowserModule,
     FormsModule,
-    RouterModule.forRoot(ROUTES)
+    RouterModule.forRoot(ROUTES),
+    NgbModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

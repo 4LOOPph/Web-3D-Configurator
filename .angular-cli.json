@@ -20,6 +20,7 @@
       "prefix": "app",
       "styles": [
         "../node_modules/bootstrap/dist/css/bootstrap.css",
+        "../node_modules/font-awesome/css/font-awesome.css",
         "styles.css"
       ],
       "scripts": [
@@ -40,7 +41,10 @@
         "../node_modules/three/examples/js/shaders/FXAAShader.js",
         "../node_modules/three/examples/js/shaders/BokehShader2.js",
         "../node_modules/popper.js/dist/umd/popper.min.js",
-        "../node_modules/bootstrap/dist/js/bootstrap.min.js"
+        "../node_modules/bootstrap/dist/js/bootstrap.min.js",
+        "../src/assets/js/blueprint3d.js",
+        "../src/assets/js/example.js",
+        "../src/assets/js/items.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

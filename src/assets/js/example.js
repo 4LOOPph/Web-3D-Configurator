@@ -196,6 +196,8 @@ var ModalEffects = function(blueprint3d) {
  */
 
 var SideMenu = function(blueprint3d, floorplanControls, modalEffects) {
+  console.log('SideMenu');
+  
   var blueprint3d = blueprint3d;
   var floorplanControls = floorplanControls;
   var modalEffects = modalEffects;
@@ -340,7 +342,6 @@ var SideMenu = function(blueprint3d, floorplanControls, modalEffects) {
   }
 
   init();
-
 }
 
 /*
@@ -466,6 +467,7 @@ var ViewerFloorplanner = function(blueprint3d) {
 }; 
 
 var mainControls = function(blueprint3d) {
+  console.log('mainControls');
   var blueprint3d = blueprint3d;
 
   function newDesign() {
@@ -502,9 +504,9 @@ var mainControls = function(blueprint3d) {
   init();
 }
 
-/*
- * Initialize!
- */
+// /*
+//  * Initialize!
+//  */
 
 $(document).ready(function() {
 
@@ -513,10 +515,12 @@ $(document).ready(function() {
     floorplannerElement: 'floorplanner-canvas',
     threeElement: '#viewer',
     threeCanvasElement: 'three-canvas',
-    textureDir: "models/textures/",
+    textureDir: "../assets/models/textures/",
     widget: false
   }
+  console.log('opts: ',opts);
   var blueprint3d = new BP3D.Blueprint3d(opts);
+  console.log('blueprint3d: ',blueprint3d);
 
   var modalEffects = new ModalEffects(blueprint3d);
   var viewerFloorplanner = new ViewerFloorplanner(blueprint3d);
